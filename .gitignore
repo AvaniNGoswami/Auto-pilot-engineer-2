@@ -1,0 +1,17 @@
+venv/
+__pycache__/
+*.log
+*.egg-info/
+*.sqlite3
+
+# Model & weight files
+*.gguf
+*.bin
+*.pt
+*.pth
+*.dll
+
+# Any downloads
+downloads/
+data/
+models/
