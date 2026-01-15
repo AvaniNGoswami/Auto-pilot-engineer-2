@@ -3,6 +3,7 @@ from app.router.auth import router as auth_router
 from app.router.suggestion import router as suggest_router
 from app.router import feedback
 from app.router import explanation
+from app.router import github
 from apscheduler.schedulers.background import BackgroundScheduler
 from app.services.feature_engineering import run_feature_engineering
 
@@ -17,6 +18,7 @@ app.include_router(auth_router)
 app.include_router(suggest_router)
 app.include_router(feedback.router)
 app.include_router(explanation.router)
+app.include_router(github.router)
 
 def start_schedular():
     schedular = BackgroundScheduler()
