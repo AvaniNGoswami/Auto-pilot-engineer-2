@@ -43,7 +43,7 @@ from app.core.security import get_current_user
 
 router = APIRouter(prefix='/github', tags=['Github Webhooks'])
 
-current_user = Depends(get_current_user)
+# current_user = Depends(get_current_user)
 
 @router.get("/test")
 async def test():
@@ -53,7 +53,7 @@ async def test():
 
 
 @router.post('/events')
-async def events(request: Request, x_github_event: str = Header(None, alias="X-GitHub-Event")):
+async def events(request: Request, x_github_event: str = Header(None, alias="X-GitHub-Event"),current_user=Depends(get_current_user)):
     print("😊Received webhook!")
     print("😊Headers:", request.headers)
     print("😊Payload:", await request.body())
