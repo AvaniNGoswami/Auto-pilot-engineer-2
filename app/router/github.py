@@ -150,6 +150,9 @@ async def test():
 
 @router.post('/events')
 async def events(background_task:BackgroundTasks, request:Request,x_github_event:str=Header(None,alias="X-Github-Event")):
+    print("😊Received webhook!")
+    print("😊Headers:", request.headers)
+    print("😊Payload:", await request.body())
     payload = await request.json()
 
     background_task.add_task(process_webhook, payload, x_github_event)
@@ -157,6 +160,7 @@ async def events(background_task:BackgroundTasks, request:Request,x_github_event
     return PlainTextResponse("webhook processed",status_code=200)
 
 def process_webhook(payload,x_github_event):
+   
     with Session(engine) as session:
         github_id = str(payload['sender'].get('id'))   # convert int → string
         github_name = payload['sender'].get('login')
