@@ -32,15 +32,18 @@
 #     return {'status':'okay'}
 
 
-from fastapi import APIRouter, Request, Header
+from fastapi import APIRouter, Request, Header,Depends
 from sqlalchemy.orm import Session
 from app.db.database import engine
 from app.models.activity_text import ActivityText
 from datetime import datetime
 from uuid import uuid4
 from fastapi.responses import PlainTextResponse
+from app.core.security import get_current_user
 
 router = APIRouter(prefix='/github', tags=['Github Webhooks'])
+
+current_user = Depends(get_current_user)
 
 @router.get("/test")
 async def test():
@@ -74,7 +77,7 @@ async def events(request: Request, x_github_event: str = Header(None, alias="X-G
         with Session(engine) as session:
             activity_text = ActivityText(
                 id=str(uuid4()),
-                userid="github",   # Since no user auth, you can mark as github
+                userid=current_user.id,   # Since no user auth, you can mark as github
                 message=msg,
                 created_at=datetime.utcnow()
             )
