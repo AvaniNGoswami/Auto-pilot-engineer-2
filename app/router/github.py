@@ -152,7 +152,7 @@ async def test():
 async def events(background_task:BackgroundTasks, request:Request,x_github_event:str=Header(None,alias="X-Github-Event")):
     payload = await request.json()
 
-    background_task.add(process_webhook, payload, x_github_event)
+    background_task.add_task(process_webhook, payload, x_github_event)
 
     return PlainTextResponse("webhook processed",status_code=200)
 
