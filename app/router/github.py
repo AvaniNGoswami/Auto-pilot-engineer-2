@@ -32,7 +32,7 @@
 #     return {'status':'okay'}
 
 
-from fastapi import APIRouter, Request, Header,Depends
+from fastapi import APIRouter, Request, Header,Depends,BackgroundTasks
 from sqlalchemy.orm import Session
 from app.db.database import engine
 from app.models.activity_text import ActivityText
@@ -103,25 +103,75 @@ async def test():
 
 #     return PlainTextResponse("Webhook received", status_code=200)
 
+# @router.post('/events')
+# async def events(request: Request, x_github_event: str = Header(None, alias="X-GitHub-Event")):
+#     payload = await request.json()
+
+#     github_id = str(payload['sender'].get('id'))   # convert int → string
+#     github_name = payload['sender'].get('login')
+#     msg = None
+
+#     if x_github_event == 'push':
+#         msg = payload.get('head_commit', {}).get('message')
+#     elif x_github_event == 'pull_request':
+#         msg = f"PR {payload.get('action')} : {payload.get('pull_request', {}).get('title')}"
+#     elif x_github_event == 'issues':
+#         msg = f"Issue {payload.get('action')} : {payload.get('issue', {}).get('title')}"
+#     elif x_github_event == 'issue_comment':
+#         msg = f"Issue Comment {payload.get('action')} : {payload.get('comment', {}).get('body')}"
+
+#     if msg:
+#         with Session(engine) as session:
+#             gh_user = session.query(User).filter_by(github_id=github_id).first()
+
+#             if not gh_user:
+#                 gh_user = User(
+#                     id=str(uuid4()),          # internal primary key
+#                     name=github_name,
+#                     github_id=github_id,
+#                     role='developer'
+#                 )
+#                 session.add(gh_user)
+#                 session.commit()
+
+#             activity_text = ActivityText(
+#                 id=str(uuid4()),
+#                 userid=gh_user.id,           # internal user id
+#                 message=msg,
+#                 created_at=datetime.utcnow()
+#             )
+#             session.add(activity_text)
+#             session.commit()
+
+#     return PlainTextResponse("Webhook received")
+
+
+
+
 @router.post('/events')
-async def events(request: Request, x_github_event: str = Header(None, alias="X-GitHub-Event")):
+async def events(background_task:BackgroundTasks, request:Request,x_github_event:str=Header(None,alias="X-Github-Event")):
     payload = await request.json()
 
-    github_id = str(payload['sender'].get('id'))   # convert int → string
-    github_name = payload['sender'].get('login')
-    msg = None
+    background_task.add(process_webhook, payload, x_github_event)
 
-    if x_github_event == 'push':
-        msg = payload.get('head_commit', {}).get('message')
-    elif x_github_event == 'pull_request':
-        msg = f"PR {payload.get('action')} : {payload.get('pull_request', {}).get('title')}"
-    elif x_github_event == 'issues':
-        msg = f"Issue {payload.get('action')} : {payload.get('issue', {}).get('title')}"
-    elif x_github_event == 'issue_comment':
-        msg = f"Issue Comment {payload.get('action')} : {payload.get('comment', {}).get('body')}"
+    return PlainTextResponse("webhook processed",status_code=200)
 
-    if msg:
-        with Session(engine) as session:
+def process_webhook(payload,x_github_event):
+    with Session(engine) as session:
+        github_id = str(payload['sender'].get('id'))   # convert int → string
+        github_name = payload['sender'].get('login')
+        msg = None
+
+        if x_github_event == 'push':
+            msg = payload.get('head_commit', {}).get('message')
+        elif x_github_event == 'pull_request':
+            msg = f"PR {payload.get('action')} : {payload.get('pull_request', {}).get('title')}"
+        elif x_github_event == 'issues':
+            msg = f"Issue {payload.get('action')} : {payload.get('issue', {}).get('title')}"
+        elif x_github_event == 'issue_comment':
+            msg = f"Issue Comment {payload.get('action')} : {payload.get('comment', {}).get('body')}"
+
+        if msg:
             gh_user = session.query(User).filter_by(github_id=github_id).first()
 
             if not gh_user:
@@ -142,5 +192,3 @@ async def events(request: Request, x_github_event: str = Header(None, alias="X-G
             )
             session.add(activity_text)
             session.commit()
-
-    return PlainTextResponse("Webhook received")
