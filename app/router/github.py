@@ -40,6 +40,7 @@ from datetime import datetime
 from uuid import uuid4
 from fastapi.responses import PlainTextResponse
 from app.core.security import get_current_user
+from app.models.user import User
 
 router = APIRouter(prefix='/github', tags=['Github Webhooks'])
 
@@ -53,13 +54,16 @@ async def test():
 
 
 @router.post('/events')
-async def events(request: Request, x_github_event: str = Header(None, alias="X-GitHub-Event"),current_user=Depends(get_current_user)):
+async def events(request: Request, x_github_event: str = Header(None, alias="X-GitHub-Event")):
     print("😊Received webhook!")
     print("😊Headers:", request.headers)
     print("😊Payload:", await request.body())
 
     payload = await request.json()
     msg = None
+    user_id = payload['sender'].get('id')
+    name = payload['sender'].get('login')
+
 
     if x_github_event == 'push':
         msg = payload.get('head_commit', {}).get('message')
@@ -75,9 +79,21 @@ async def events(request: Request, x_github_event: str = Header(None, alias="X-G
 
     if msg:
         with Session(engine) as session:
+            gh_user = session.query(User).filter_by(id=user_id).first()
+
+            if not gh_user:
+                user = User(
+                    id = user_id,
+                    name = name,
+                    role = 'developer'
+                )
+                session.add(user)
+                session.commit()
+                session.refresh(user)
+
             activity_text = ActivityText(
                 id=str(uuid4()),
-                userid=current_user.id,   # Since no user auth, you can mark as github
+                userid=user_id,   # Since no user auth, you can mark as github
                 message=msg,
                 created_at=datetime.utcnow()
             )
