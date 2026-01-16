@@ -53,53 +53,94 @@ async def test():
 
 
 
+# @router.post('/events')
+# async def events(request: Request, x_github_event: str = Header(None, alias="X-GitHub-Event")):
+#     print("😊Received webhook!")
+#     print("😊Headers:", request.headers)
+#     print("😊Payload:", await request.body())
+
+#     payload = await request.json()
+#     msg = None
+#     user_id = payload['sender'].get('id')
+#     name = payload['sender'].get('login')
+
+
+#     if x_github_event == 'push':
+#         msg = payload.get('head_commit', {}).get('message')
+    
+#     elif x_github_event == 'pull_request':
+#         msg = f"PR {payload.get('action')} : {payload.get('pull_request', {}).get('title')}"
+    
+#     elif x_github_event == 'issues':
+#         msg = f"Issue {payload.get('action')} : {payload.get('issue', {}).get('title')}"
+    
+#     elif x_github_event == 'issue_comment':
+#         msg = f"Issue Comment {payload.get('action')} : {payload.get('comment', {}).get('body')}"
+
+#     if msg:
+#         with Session(engine) as session:
+#             gh_user = session.query(User).filter_by(id=user_id).first()
+
+#             if not gh_user:
+#                 user = User(
+#                     id = user_id,
+#                     name = name,
+#                     role = 'developer'
+#                 )
+#                 session.add(user)
+#                 session.commit()
+#                 session.refresh(user)
+
+#             activity_text = ActivityText(
+#                 id=str(uuid4()),
+#                 userid=user_id,   # Since no user auth, you can mark as github
+#                 message=msg,
+#                 created_at=datetime.utcnow()
+#             )
+#             session.add(activity_text)
+#             session.commit()
+#             session.refresh(activity_text)
+
+#     return PlainTextResponse("Webhook received", status_code=200)
+
 @router.post('/events')
 async def events(request: Request, x_github_event: str = Header(None, alias="X-GitHub-Event")):
-    print("😊Received webhook!")
-    print("😊Headers:", request.headers)
-    print("😊Payload:", await request.body())
-
     payload = await request.json()
-    msg = None
-    user_id = payload['sender'].get('id')
-    name = payload['sender'].get('login')
 
+    github_id = str(payload['sender'].get('id'))   # convert int → string
+    github_name = payload['sender'].get('login')
+    msg = None
 
     if x_github_event == 'push':
         msg = payload.get('head_commit', {}).get('message')
-    
     elif x_github_event == 'pull_request':
         msg = f"PR {payload.get('action')} : {payload.get('pull_request', {}).get('title')}"
-    
     elif x_github_event == 'issues':
         msg = f"Issue {payload.get('action')} : {payload.get('issue', {}).get('title')}"
-    
     elif x_github_event == 'issue_comment':
         msg = f"Issue Comment {payload.get('action')} : {payload.get('comment', {}).get('body')}"
 
     if msg:
         with Session(engine) as session:
-            gh_user = session.query(User).filter_by(id=user_id).first()
+            gh_user = session.query(User).filter_by(github_id=github_id).first()
 
             if not gh_user:
-                user = User(
-                    id = user_id,
-                    name = name,
-                    role = 'developer'
+                gh_user = User(
+                    id=str(uuid4()),          # internal primary key
+                    name=github_name,
+                    github_id=github_id,
+                    role='developer'
                 )
-                session.add(user)
+                session.add(gh_user)
                 session.commit()
-                session.refresh(user)
 
             activity_text = ActivityText(
                 id=str(uuid4()),
-                userid=user_id,   # Since no user auth, you can mark as github
+                userid=gh_user.id,           # internal user id
                 message=msg,
                 created_at=datetime.utcnow()
             )
             session.add(activity_text)
             session.commit()
-            session.refresh(activity_text)
 
-    return PlainTextResponse("Webhook received", status_code=200)
-
+    return PlainTextResponse("Webhook received")
