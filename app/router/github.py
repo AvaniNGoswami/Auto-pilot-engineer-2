@@ -179,18 +179,23 @@ def process_webhook(payload,x_github_event):
             gh_user = session.query(User).filter_by(github_id=github_id).first()
 
             if not gh_user:
-                gh_user = User(
-                    id=str(uuid4()),          # internal primary key
-                    name=github_name,
-                    github_id=github_id,
-                    role='developer'
-                )
-                session.add(gh_user)
-                session.commit()
+                gh_user = session.query(User).filter_by(name=github_name).first()
+                if gh_user:
+                    gh_user.github_id=github_id
+                    session.commit()
+                else:
+                    gh_user = User(
+                        id=str(uuid4()),         
+                        name=github_name,
+                        github_id=github_id,
+                        role='developer'
+                    )
+                    session.add(gh_user)
+                    session.commit()
 
             activity_text = ActivityText(
                 id=str(uuid4()),
-                userid=gh_user.id,           # internal user id
+                userid=gh_user.id,           
                 message=msg,
                 created_at=datetime.utcnow()
             )

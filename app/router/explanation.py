@@ -19,6 +19,11 @@ def explain(data : request_model, current_user=Depends(get_current_user)):
     with Session(engine) as session:
         messages = session.query(ActivityText).filter(ActivityText.userid==current_user.id).all()
         messages = [m.message for m in messages]
+    
+    if not messages:
+        # No history for this user, return generic explanation
+        explain = f"No previous messages found. Suggestion: {data.suggestion}"
+        return response_model(suggestion=data.suggestion, explanation=explain)
 
     relevant_message = get_most_relevant_message(data.suggestion,messages)
     explain = generate_natural_explanation(data.suggestion,relevant_message)

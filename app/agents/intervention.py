@@ -51,12 +51,37 @@ def intervene(userid,analysis):
 
     # Productivity rules (RANGES)
     if p >= 1.5:
-        return "🔥 Peak focus! Keep pushing!"
+        suggestion= "🔥 Peak focus! Keep pushing!"
+        record(userid, suggestion, None, None)
+        return suggestion
     if 0.5 <= p < 1.5:
-        return "🙂 You're doing okay, maintain rhythm."
+        suggestion= "🙂 You're doing okay, maintain rhythm."
+        record(userid, suggestion, None, None)
+        return suggestion
     if p < 0.5:
         suggestion = "📉 Low productivity — try a 25-minute deep work sprint."
         record(userid, suggestion, None, None)
         return suggestion
 
     return "📌 Try scheduling deep work block to boost focus."
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
