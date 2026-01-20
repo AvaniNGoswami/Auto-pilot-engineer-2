@@ -30,7 +30,7 @@ def start_scheduler():
         replace_existing=True,
     )
     scheduler.start()
-    print("🕒 APScheduler started... running every 1 minute")
+    print("🕒 APScheduler started... ")
 
 
 atexit.register(lambda: scheduler.shutdown())
