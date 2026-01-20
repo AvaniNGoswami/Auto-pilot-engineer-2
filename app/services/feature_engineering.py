@@ -1,140 +1,3 @@
-# import pandas as pd
-# from sqlalchemy.orm import Session
-# from app.db.database import engine
-# from app.models.activity import ActivityEvent
-# from app.models.features import Features
-# from uuid import uuid4
-# from sqlalchemy import Date
-# from app.models.activity_text import ActivityText
-
-# def run_feature_engineering():
-#     print("running daily feature computation")
-#     with Session(engine) as session:
-#         # Get dates already processed in features table
-#         existing_dates = session.query(Features.date).distinct().all()
-#         existing_dates = {d[0] for d in existing_dates}
-
-#         # Pull only events whose date is not processed
-#         events = session.query(ActivityEvent).filter(
-#             ~ActivityEvent.timestamp.cast(Date).in_(existing_dates)
-#         ).all()
-        
-        
-#         events_github = session.query(ActivityText).filter(
-#             ~ActivityText.created_at.cast(Date).in_(existing_dates)
-#         ).all()
-#         # Even if ActivityEvents are empty, check if GitHub text has new dates
-#         if not events and not events_github:
-#             print("✨ No new events found (Activity + GitHub). Nothing to compute.")
-#             return
-
-
-#         if not events_github:
-#             print("⚠️ No GitHub events — continuing with Activity only.")
-#             df_github = pd.DataFrame(columns=["userid","message","created_at","date"])
-
-
-#         df = pd.DataFrame([{
-#             "userid":e.userid,
-#             "event_type":e.event_type,
-#             "duration_minutes":e.duration_minutes,
-#             "timestamp":e.timestamp
-#         }for e in events])
-#         if df.empty:
-#             df = pd.DataFrame(columns=["userid","event_type","duration_minutes","timestamp"])
-
-#         df_github = pd.DataFrame([{
-#             "userid":e.userid,
-#             "message":e.message,
-#             "created_at":e.created_at,
-#         }for e in events_github])
-
-#         # df = pd.concat([df, pd.DataFrame(df_github)], ignore_index=True, sort=False)
-
-#         # df["date"] = pd.to_datetime(df['timestamp']).dt.date
-#         # grouped = df.groupby(['userid','date'])
-
-#         # df_github["date"] = pd.to_datetime(df_github['created_at']).dt.date
-#         # grouped_github = df_github.groupby(['userid','date'])
-
-#         # context_switch_count=0
-#         # coding_min=0
-
-#         # for (userid,date),group in grouped:
-#         #     total_work = group[group['event_type']=='work']['duration_minutes'].sum()
-#         #     total_break = group[group['event_type']=='break']['duration_minutes'].sum()
-#         #     context_switch = group[group['event_type']=='task switch'].shape[0]
-
-#         #     context_switch_count=0
-#         #     coding_min=0
-
-#         #     if (userid,date) in grouped_github.groups:
-#         #         gh_github = grouped_github.get_group((userid,date))
-#         #         for msg in gh_github['message']:
-#         #             msg = msg.lower()
-#         #             if 'issue' in msg or 'pr' in msg:
-#         #                 context_switch_count+=1
-#         #             elif 'fixed' in msg or 'added' in msg:
-#         #                 coding_min +=20
-#         df["date"] = pd.to_datetime(df['timestamp']).dt.date
-#         grouped = df.groupby(['userid','date'])
-
-#         df_github["date"] = pd.to_datetime(df_github['created_at']).dt.date
-#         grouped_github = df_github.groupby(['userid','date'])
-
-#         # NEW: union of dates across both tables
-#         keys = set(list(grouped.groups.keys()) + list(grouped_github.groups.keys()))
-
-#         for (userid, date) in keys:
-#             group = grouped.get_group((userid, date)) if (userid, date) in grouped.groups else pd.DataFrame()
-
-#             total_work = group[group['event_type']=='work']['duration_minutes'].sum() if not group.empty else 0
-#             total_break = group[group['event_type']=='break']['duration_minutes'].sum() if not group.empty else 0
-#             context_switch = group[group['event_type']=='task switch'].shape[0] if not group.empty else 0
-
-#             coding_min = 0
-#             context_switch_count = 0
-
-#             if (userid,date) in grouped_github.groups:
-#                 gh_github = grouped_github.get_group((userid,date))
-#                 for msg in gh_github['message']:
-#                     msg = msg.lower()
-#                     if 'issue' in msg or 'pr' in msg:
-#                         context_switch_count += 1
-#                     else:
-#                         coding_min += 20   # simplify rule
-
-
-#             context_switch+=context_switch_count
-#             total_work+=coding_min
-
-           
-#             focus_score = total_work/(total_work+total_break+context_switch*5) or 1
-#             fatique_score = total_break/(total_work+total_break+context_switch*5) or 1
-
-#             feature = Features(
-#                 id = str(uuid4()),
-#                 userid = userid,
-#                 date = date,
-#                 total_work_minutes = int(total_work),           
-#                 total_break_minutes = int(total_break),         
-#                 context_switch_rate = int(context_switch),     
-#                 fatigue_score = float(fatique_score),          
-#                 focus_score = float(focus_score)             
-#             )
-#             session.add(feature)
-#             session.commit()
-#             session.refresh(feature)
-
-
-#     print("👍👍👍👍👍👍computed")
-
-
-
-
-
-
-
 import pandas as pd
 from sqlalchemy.orm import Session
 from app.db.database import engine
@@ -147,16 +10,14 @@ from sqlalchemy import Date
 def run_feature_engineering():
     print("running daily feature computation")
     with Session(engine) as session:
-        # Get dates already processed in features table
         existing_dates = session.query(Features.date).distinct().all()
         existing_dates = {d[0] for d in existing_dates}
 
-        # Pull unprocessed ActivityEvents
         events = session.query(ActivityEvent).filter(
             ~ActivityEvent.timestamp.cast(Date).in_(existing_dates)
         ).all()
 
-        # Pull unprocessed GitHub activity
+
         events_github = session.query(ActivityText).filter(
             ~ActivityText.created_at.cast(Date).in_(existing_dates)
         ).all()
@@ -165,7 +26,6 @@ def run_feature_engineering():
             print("✨ No new events found (Activity + GitHub). Nothing to compute.")
             return
 
-        # Convert ActivityEvents to DataFrame
         if events:
             df_activity = pd.DataFrame([{
                 "userid": e.userid,
@@ -177,7 +37,7 @@ def run_feature_engineering():
         else:
             df_activity = pd.DataFrame(columns=["userid","event_type","duration_minutes","timestamp","date"])
 
-        # Convert ActivityText (GitHub) to DataFrame
+
         if events_github:
             df_github = pd.DataFrame([{
                 "userid": e.userid,
@@ -188,22 +48,20 @@ def run_feature_engineering():
         else:
             df_github = pd.DataFrame(columns=["userid","message","created_at","date"])
 
-        # Group by user + date
+
         grouped_activity = df_activity.groupby(['userid','date']) if not df_activity.empty else {}
         grouped_github = df_github.groupby(['userid','date']) if not df_github.empty else {}
 
-        # Union of all keys
         keys = set(list(grouped_activity.groups.keys()) if grouped_activity else []) | \
                set(list(grouped_github.groups.keys()) if grouped_github else [])
 
         for (userid, date) in keys:
-            # Activity events
+
             group_activity = grouped_activity.get_group((userid,date)) if (grouped_activity and (userid,date) in grouped_activity.groups) else pd.DataFrame()
             total_work = group_activity[group_activity['event_type']=='work']['duration_minutes'].sum() if not group_activity.empty else 0
             total_break = group_activity[group_activity['event_type']=='break']['duration_minutes'].sum() if not group_activity.empty else 0
             context_switch = group_activity[group_activity['event_type']=='task switch'].shape[0] if not group_activity.empty else 0
 
-            # GitHub activity
             coding_min = 0
             context_switch_count = 0
             if grouped_github and (userid,date) in grouped_github.groups:
@@ -215,16 +73,15 @@ def run_feature_engineering():
                     else:
                         coding_min += 20
 
-            # Combine
+    
             context_switch += context_switch_count
             total_work += coding_min
 
-            # Compute scores safely
             denominator = total_work + total_break + context_switch*5
             focus_score = total_work / denominator if denominator > 0 else 1
             fatigue_score = total_break / denominator if denominator > 0 else 1
 
-            # Insert features
+
             feature = Features(
                 id=str(uuid4()),
                 userid=userid,

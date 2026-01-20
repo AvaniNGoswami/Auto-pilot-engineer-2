@@ -27,23 +27,6 @@ def intervene(userid,analysis):
     if fb['avg_rate'] is not None and fb['avg_rate'] >= 4.0:
         return "🔥 Love that suggestions are helping! Try increasing your weekly goals 📈"
 
-    # if b == 2:
-    #     suggestion = "🚨 Burnout risk high! Take a long break + hydrate."
-    #     return "🚨 Burnout risk high! Take a long break + hydrate."
-    # if b == 1:
-    #     suggestion = "⚠️ Moderate stress. Try a 10-min walk."
-    #     return "⚠️ Moderate stress. Try a 10-min walk."
-    # if p == 2:
-    #     suggestion = "🔥 Peak focus! Keep pushing!"
-    #     return "🔥 Peak focus! Keep pushing!"
-    # if p == 1:
-    #     suggestion = "🙂 You're doing okay, maintain rhythm."
-    #     return "🙂 You're doing okay, maintain rhythm."
-    
-    # suggestion = "📌 Try scheduling deep work block to boost focus."
-    # record(userid, suggestion, None, None)
-
-    # return "📌 Try scheduling deep work block to boost focus."
     if b >= 2:
         return "🚨 Burnout risk high! Take a long break + hydrate."
     if 1 <= b < 2:

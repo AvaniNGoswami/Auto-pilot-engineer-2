@@ -21,7 +21,6 @@ def explain(data : request_model, current_user=Depends(get_current_user)):
         messages = [m.message for m in messages]
     
     if not messages:
-        # No history for this user, return generic explanation
         explain = f"No previous messages found. Suggestion: {data.suggestion}"
         return response_model(suggestion=data.suggestion, explanation=explain)
 

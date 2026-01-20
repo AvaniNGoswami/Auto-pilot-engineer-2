@@ -7,7 +7,7 @@ class User(Base):
 
     id = Column(String, primary_key=True)
     name = Column(String)
-    role = Column(String) #student, developer, freelancer4
+    role = Column(String) 
     github_id = Column(String, unique=True)
 
 

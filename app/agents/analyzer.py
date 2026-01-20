@@ -17,6 +17,6 @@ def analyze(features):
     burn_pred  = model_burn.predict([[total_work_minutes,total_break_minutes,context_switch_rate,fatigue_score]])
 
     return {
-    'productivity': float(prod_pred[0]),  # regression → numeric
-    'burnout': str(burn_pred[0])          # classifier → string label
+    'productivity': float(prod_pred[0]),  
+    'burnout': str(burn_pred[0])        
     }
