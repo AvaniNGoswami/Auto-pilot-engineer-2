@@ -72,7 +72,7 @@ userid = user['id']
 
 df = load_data(userid=userid)
 df['date'] = pd.to_datetime(df['date'])
-# df = df.sort_values('date')
+df = df.sort_values('date')
 
 
 st.subheader("Work vs Break minutes")
