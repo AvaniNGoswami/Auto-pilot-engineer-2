@@ -11,7 +11,6 @@ from sqlalchemy.orm import Session
 from app.db.database import engine
 from uuid import uuid4
 
-# oath2_schema = OAuth2PasswordBearer(tokenUrl="/login")
 oath2_schema = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
@@ -41,6 +40,11 @@ def create_access_token(user_id:str, expires_delta:Optional[timedelta]=None) -> 
         session.add(auth_session)
         session.commit()
     return token
+
+
+
+
+
 
 def decode_access_token(token:str) -> dict:
     try:

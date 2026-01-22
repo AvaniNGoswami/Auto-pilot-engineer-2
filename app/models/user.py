@@ -1,5 +1,6 @@
-from sqlalchemy import Column, String
+from sqlalchemy import Column, String,DateTime
 from app.db.base import Base
+from datetime import datetime
 
 
 class User(Base):
@@ -9,5 +10,7 @@ class User(Base):
     name = Column(String)
     role = Column(String) 
     github_id = Column(String, unique=True)
+    email = Column(String, unique=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
 
 

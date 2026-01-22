@@ -13,9 +13,15 @@ from uuid import uuid4
 router = APIRouter(prefix="/auth",tags=["Auth"])
 
 @router.post("/login")
-def login(user_id:str):
-    token = create_access_token(user_id=user_id,expires_delta=timedelta(days=1))
+def login(email:str):
+    with Session(engine) as session:
+        user = session.query(User).filter(User.email==email).first()
+        if not user:
+            raise HTTPException(status_code=400,detail="invalid credentials")
+
+    token = create_access_token(user_id=user.id,expires_delta=timedelta(days=1))
     return {"access_token":token, "token_type":"Bearer"}
+
 
 
  
