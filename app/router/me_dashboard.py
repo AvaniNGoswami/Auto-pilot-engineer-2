@@ -1,5 +1,3 @@
-from app.db.database import engine
-from sqlalchemy.orm import Session
 from app.core.security import get_current_user
 from app.models.user import User
 from fastapi import APIRouter,Depends
