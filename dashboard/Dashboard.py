@@ -12,17 +12,12 @@ from datetime import timedelta
 import numpy as np
 import os
 
-# -------------------------------
-# CONFIG
-# -------------------------------
+
 st.set_page_config(page_title="Auto-Pilot Engineer Dashboard", layout="wide")
 
 API_BASE = os.getenv("API_BASE", "http://127.0.0.1:8000")
 
 
-# -------------------------------
-# LOGIN
-# -------------------------------
 def login_user(email):
     resp = requests.post(url=f"{API_BASE}/auth/login", params={"email": email})
     if resp.status_code != 200:
@@ -44,9 +39,6 @@ if 'token' not in st.session_state:
     st.error("Please login to view dashboard")
     st.stop()
 
-# -------------------------------
-# GET CURRENT USER
-# -------------------------------
 def get_current_user_from_api():
     resp = requests.get(
         url=f"{API_BASE}/me",
@@ -58,16 +50,14 @@ def get_current_user_from_api():
 user = get_current_user_from_api()
 userid = user['id']
 
-# -------------------------------
-# LOAD FEATURE DATA
-# -------------------------------
+
 def load_data(userid):
     with Session(engine) as session:
         rows = session.query(Features).filter(Features.userid == userid).all()
         data = pd.DataFrame([
             {
                 "userid": f.userid,
-                "datetime": f.date,  # keep full timestamp
+                "datetime": f.date,  
                 "total work": f.total_work_minutes,
                 "total break": f.total_break_minutes,
                 "context switch": f.context_switch_rate,
@@ -82,13 +72,7 @@ df = load_data(userid)
 df['datetime'] = pd.to_datetime(df['datetime'])
 df = df.sort_values('datetime')
 
-# -------------------------------
-# DAILY AGGREGATE (for metrics)
-# -------------------------------
 
-# -------------------------------
-# TODAY METRICS
-# -------------------------------
 today_data = df[df['datetime'].dt.date == df['datetime'].dt.date.max()]
 today_focus = today_data['focus score'].mean()
 today_fatigue = today_data['fatigue score'].mean()
@@ -106,9 +90,7 @@ elif today_focus > 0.7:
 else:
     st.info("📈 You worked okay—try reducing context switches.")
 
-# -------------------------------
-# CHARTS
-# -------------------------------
+
 st.subheader("Work vs Break Minutes (Hourly)")
 st.line_chart(df.set_index('datetime')[['total work', 'total break']])
 
@@ -121,11 +103,7 @@ st.line_chart(df.set_index('datetime')['context switch'])
 st.subheader("Fatigue Trend (Hourly)")
 st.line_chart(df.set_index('datetime')['fatigue score'])
 
-# -------------------------------
-# OPTIONAL: Daily aggregate charts
-# -------------------------------
-# DAILY AGGREGATE (TRUE DAILY)
-# -------------------------------
+
 
 df['date_only'] = df['datetime'].dt.normalize()
 
@@ -139,7 +117,7 @@ daily_df = df.groupby('date_only').agg({
 
 daily_df = daily_df.rename(columns={'date_only': 'date'})
 
-# force string axis (no time ticks)
+
 daily_df['date_str'] = daily_df['date'].dt.strftime('%Y-%m-%d')
 
 st.subheader("Daily Summary (Aggregated)")
@@ -154,11 +132,6 @@ st.subheader('fatigue score')
 st.line_chart(daily_df.set_index('date_str')['fatigue score'])
 
 
-
-
-
-
-#for Autopilot Impact Score (AIS)
 with Session(engine) as session:
 
     accepted_feedback = session.query(Feedback).filter_by(userid=userid,accepted=True).order_by(Feedback.created_at.desc()).first()
@@ -189,11 +162,10 @@ def calculate_metric(pre_values, post_values, label, positive_direction='increas
     if avg_pre > 0:
         change = ((avg_post - avg_pre)/avg_pre) * 100
         if positive_direction == 'decrease':
-            change = -change  # invert for metrics where lower is better (fatigue/context switch)
+            change = -change  
     else:
         change = 0
 
-    # descriptive message
     if change >= 20:
         desc = f"✅ Strong Positive Impact\n{label} improved significantly after feedback."
     elif 5 <= change < 20:
