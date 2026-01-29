@@ -165,7 +165,7 @@ ________________________________________
 ________________________________________
 🧰 Local Setup (Without Docker)
 # Clone repo
-git clone <your-repo-url>
+git clone https://github.com/AvaniNGoswami/Auto-pilot-engineer.git
 cd auto-pilot-engineer
 
 # Create virtual environment
