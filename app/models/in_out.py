@@ -7,3 +7,4 @@ class In_Out(Base):
     userid = Column(String,ForeignKey("users.id", ondelete="CASCADE"))
     in_time = Column(DateTime)
     out_time = Column(DateTime)
+    project_id = Column(String, nullable=True)

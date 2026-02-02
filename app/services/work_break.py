@@ -6,7 +6,7 @@ from app.db.database import engine
 from app.models.activity import ActivityEvent
 from app.models.in_out import In_Out
 
-def work_calculator(userid: str):
+def work_calculator(userid: str, project_id: str):
     now = datetime.utcnow()
 
     with Session(engine) as session:
@@ -48,7 +48,7 @@ def work_calculator(userid: str):
         session.commit()
 
 
-def break_calculator(userid: str):
+def break_calculator(userid: str,project_id:str):
     now = datetime.utcnow()
 
     with Session(engine) as session:
@@ -71,7 +71,8 @@ def break_calculator(userid: str):
             new_in = In_Out(
             id=str(uuid4()),
             userid=userid,
-            in_time=now
+            in_time=now,
+            project_id = project_id
             )
             session.add(new_in)
 
@@ -80,21 +81,32 @@ def break_calculator(userid: str):
 
             if diff_minutes <= 0:
                 raise Exception("Invalid break duration")
-
-            activity_event = ActivityEvent(
+            if last_out.project_id != project_id:
+                activity_event = ActivityEvent(
                 id=str(uuid4()),
                 userid=userid,
-                event_type="break",
-                duration_minutes=int(diff_minutes),
+                event_type="task switch",
+                duration_minutes=0,
                 timestamp=last_out.out_time
-            )
-            session.add(activity_event)
+                )
+                session.add(activity_event)
+
+            else:
+                activity_event = ActivityEvent(
+                    id=str(uuid4()),
+                    userid=userid,
+                    event_type="break",
+                    duration_minutes=int(diff_minutes),
+                    timestamp=last_out.out_time
+                )
+                session.add(activity_event)
 
             # Start new IN session
             new_in = In_Out(
                 id=str(uuid4()),
                 userid=userid,
-                in_time=now
+                in_time=now,
+                project_id=project_id
             )
             session.add(new_in)
         print(f'Break duration (minutes): {diff_minutes}🔥🔥🔥🔥🔥🔥')
