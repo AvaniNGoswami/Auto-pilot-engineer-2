@@ -97,6 +97,6 @@ def break_calculator(userid: str):
                 in_time=now
             )
             session.add(new_in)
-        print(f'Break duration (minutes): {diff_minutes}🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥')
+        print(f'Break duration (minutes): {diff_minutes}🔥🔥🔥🔥🔥🔥🔥🔥')
 
         session.commit()
