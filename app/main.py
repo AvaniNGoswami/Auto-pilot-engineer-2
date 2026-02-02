@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from app.router.auth import router as auth_router
 from app.router.suggestion import router as suggest_router
-from app.router import feedback, explanation, github, me_dashboard
+from app.router import feedback, explanation, github, me_dashboard, github_api, in_out
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from app.services.feature_engineering import run_feature_engineering
@@ -19,6 +19,8 @@ app.include_router(feedback.router)
 app.include_router(explanation.router)
 app.include_router(github.router)
 app.include_router(me_dashboard.router) 
+app.include_router(github_api.router)
+app.include_router(in_out.router)
 
 
 scheduler = BackgroundScheduler()
