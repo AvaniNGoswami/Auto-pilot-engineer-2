@@ -1,11 +1,10 @@
 # 🚀Auto-pilot-engineer
-An AI-powered productivity intelligence system for developers
-Auto-Pilot Engineer is an autonomous AI co-pilot that observes developer work patterns, learns personal productivity trends, and provides actionable suggestions to improve focus and prevent burnout — all without surveillance or micromanagement.
+Auto-Pilot Engineer is an semi autonomous AI co-pilot that observes developer work patterns, learns personal productivity trends, and provides actionable suggestions to improve focus and prevent burnout — all without surveillance or micromanagement.
 
 One-line pitch:
 Auto-Pilot Engineer collects developer activity metadata, predicts productivity and fatigue levels, and provides suggestions and explanations to help developers work smarter, not longer.
 
-🧠 Why This Project Exists
+Why This Project Exists
 Modern developers face:
 - Long working hours
 - Constant context switching
@@ -13,96 +12,95 @@ Modern developers face:
 - Tools that track time, not cognitive effectiveness
   
 What’s broken today:
-Tool Type	       Problem
+Tool Type	                Problem
 Time trackers	       Surveillance, not insight
-To-do apps	       Static, not adaptive
-Productivity apps	Generic advice
-Managers	       Guess productivity
+To-do apps	           Static, not adaptive
+Productivity apps	   Generic advice
+Managers	           Guess productivity
 No existing system understands how developers actually work. Auto-Pilot Engineer is designed to learn behavioural patterns, not just count hours.
 
-🎯 What Auto-Pilot Engineer Does
+## 🎯 What Auto-Pilot Engineer Does
 Auto-Pilot Engineer acts as a silent AI co-pilot that:
-1.	Observes work patterns (metadata only)
-o	Collects GitHub activity events via webhooks.
-o	Synthetic “work” and “break” events are generated for ML training.
-o	No code or private content is accessed; all data is opt-in.
-2.	Learns productivity trends
-o	Uses features like session length, break frequency, context switching, and fatigue score to train ML models.
-o	Predicts:
-	Productivity score
-	Burnout/fatigue risk
-3.	Detects fatigue and burnout risk
-o	Historical features are analysed to identify:
-	Consecutive long days
-	Declining output
-	Skipped breaks
-o	Outputs Low / Medium / High burnout risk and fatigue trends.
-4.	Agentic decision layer (autonomous core)
-o	Observer Agent -> gathers recent activity features
-o	Analyzer Agent -> predicts productivity & burnout
-o	Intervention Agent -> generates actionable suggestions using rules and feedback
-o	Orchestrator -> runs the pipeline when Suggestion API is called
-5.	Provides explainable suggestions
-o	Suggestion API triggers actionable advice.
-o	Explanation API returns human-readable rationale:
-	Template-based explanation
-	Future support for local or API-based LLMs
-6.	Stores user feedback
-o	Users can accept/reject suggestions and provide ratings (0–5 stars).
-o	Feedback is stored in the database and can be used to improve future versions.
-o	Currently, ML models are not retrained in real-time, but feedback informs agent decisions.
-What it does NOT do:
-•	❌ Spy on keystrokes
-•	❌ Read code or private content
-•	❌ Force schedules
-•	❌ Punish breaks
-________________________________________
-👥 Target Users
-Primary:
-•	Remote developers
-•	Freelancers
-•	Students / interns
-•	Startup engineers
-Secondary (Optional):
-•	Team leads (aggregated insights only)
-•	Remote-first companies (opt-in)
 
-🏗️ System Architecture (High-Level)
-Developer Activity
-       ⬇️
-Signal Extraction (GitHub + synthetic events)
-       ⬇️
-Feature Engineering / Pattern Learning (ML)
-       ⬇️
-Agentic Reasoning (Observer → Analyzer → Intervention → Orchestrator)
-       ⬇️
-Action / Suggestion
-       ⬇️
-Feedback Storage & Future Learning
+1.	Observes work patterns (metadata only)
+-	Collects GitHub activity events via webhooks.
+-	Collects developer activity metadata via GitHub API:
+	 - Commits
+	 - Timestamps
+ 	 - Activity frequency
+-   Manual session tracker for:
+	 - Work start / end
+ 	 - Break / work tracking
+-	No code or private content is accessed; all data is opt-in.
+2.	Learns productivity trends
+-	Uses features like session length, break frequency, context switching, and fatigue score to train ML models.
+-	Predicts:
+     - Productivity score
+     - Burnout/fatigue risk
+	 - Outputs Low / Medium / High burnout risk and fatigue trends.
+4.	Agentic decision layer (autonomous core)
+-	Observer Agent -> gathers recent activity features
+-	Analyzer Agent -> predicts productivity & burnout
+-	Intervention Agent -> generates actionable suggestions using rules and feedback
+-	Orchestrator -> runs the pipeline when Suggestion API is called
+5.	Provides explainable suggestions
+-	Suggestion API triggers actionable advice.
+-	Explanation API returns human-readable rationale:
+	 - Template-based explanation 
+	 - Future support for local or API-based LLMs
+6.	Stores user feedback
+-	Users can accept/reject suggestions and provide ratings (0–5 stars).
+-	Feedback is stored in the database and can be used to improve future versions.
+-	Currently, ML models are not retrained in real-time, but feedback informs agent decisions.
+What it does NOT do:
+-	❌ Spy on keystrokes
+-	❌ Read code or private content
+-	❌ Force schedules
+-	❌ Punish breaks
+
+### 👥 Target Users
+Primary:
+-	Remote developers
+-	Freelancers
+-	Students / interns
+-	Startup engineers
+Secondary (Optional):
+-	Team leads (aggregated insights only)
+-	Remote-first companies (opt-in)
+
+### System Architecture (High-Level)
+- Developer Activity
+- Signal Extraction (GitHub + manual session start / end)
+- feature engineering pipeline to compute features at a specified interval of time
+- Pattern Learning (ML)
+- Agentic Reasoning (Observer → Analyzer → Intervention → Orchestrator)
+- Action / Suggestion
+- Feedback Storage & Future Learning
+- In - Out API to record the session 
+  
 This loop operates continuously whenever APIs are called.
 
-🧩 Core Modules
+### 🧩 Core Modules
 1.	Activity Signal Collector
-o	Collects metadata (GitHub commits, session start/end, breaks, time of day,).
-o	All data is opt-in.
+-	Collects metadata (GitHub commits, session start/end, breaks, time of day,).
+-	All data is opt-in.
 2.	Productivity Pattern Engine (ML Brain)
-o	Trains models for productivity and burnout risk.
-o	Inputs: work duration, breaks, context switches, fatigue scores.
-o	Outputs: personalized productivity and burnout predictions.
+-	Trains models for productivity and burnout risk.
+-	Inputs: work duration, breaks, context switches, fatigue scores.
+-	Outputs: personalized productivity and burnout predictions.
 3.	Burnout & Risk Detection
-o	Uses ML predictions to assess fatigue trends.
-o	Outputs Low / Medium / High burnout risk.
+-	Uses ML predictions to assess fatigue trends.
+-	Outputs Low / Medium / High burnout risk.
 4.	Agentic Decision Layer
-o	Orchestrates Observer, Analyzer, and Intervention agents.
-o	Suggestion API triggers agentic reasoning for actionable guidance.
+-	Orchestrates Observer, Analyzer, and Intervention agents.
+-	Suggestion API triggers agentic reasoning for actionable guidance.
 5.	Explanation Engine
-o	Returns template-based, human-readable explanations.
-o	Optional embeddings for context; LLM integration is planned.
+-	Returns template-based, human-readable explanations.
+-	Optional embeddings for context; LLM integration is planned.
 6.	Feedback System
-o	Feedback is recorded with acceptance and rating.
-o	Currently supports future learning and analysis; not real-time model retraining.
+-	Feedback is recorded with acceptance and rating.
 
-🖥️ What Users See
+## 🖥️ What Users See
 
 Dashboard Overview
 
@@ -114,7 +112,7 @@ Today's Metrics:
 - Focus Score – average focus for the current day.
 - Fatigue Score – average fatigue for the current day.
 - Contextual Advice: Smart messages based on focus and fatigue, e.g.:
-	 -“🔥 You're killing it today! Keep the streak.”
+	    -“🔥 You're killing it today! Keep the streak.”
         -“⚠️ You might be burning out. Take a long break!”
         -“📈 Work okay — try reducing context switches.”
 monthy Trends (Line Charts):
@@ -131,29 +129,29 @@ Autopilot Effectiveness Score (AES):
 - Measures the impact of agent suggestions over time by comparing metrics before and after accepted suggestions.
 - Includes: Focus, Fatigue, Context Switching
 - Displays % change and descriptive insights:
-	- ✅ Strong Positive Impact
+	   - ✅ Strong Positive Impact
        - 🟡 Moderate Positive Impact
        - ⚪ Neutral Impact
        - ❌ Negative Impact
 
-Interactive Features:
+### Interactive Features:
 - Metrics update dynamically using SQLAlchemy queries from the database.
 - Charts and AES help users understand trends and the effectiveness of Auto-Pilot guidance.
 
-Smart Suggestion:
+### Smart Suggestion:
 - “You're doing okay, maintain rhythm.
 - “Low productivity — try a 25-minute-deep work sprint.
 - No spam; only high-signal interventions.
 
-🛠️ Tech Stack
+## 🛠️ Tech Stack
 Backend: FastAPI, SQLAlchemy / SQLModel, PostgreSQL, JWT Auth
 ML / Data: Pandas, NumPy, scikit-learn, Feature engineering
 AI / NLP : Sentence Transformers
 Dashboard: Streamlit 
 DevOps (Optional): Docker, Docker Compose
 
-🧪 Features Implemented
-- Activity logging API (GitHub + synthetic events)
+### 🧪 Features Implemented
+- Activity logging API (GitHub + manual session start / end events)
 - Feature engineering pipeline
 - ML models for productivity and burnout
 - Agent-based decision logic
@@ -161,59 +159,59 @@ DevOps (Optional): Docker, Docker Compose
 - Explanation API
 - Feedback storage
 - Interactive dashboard
+- In - Out API to start and end seesion
 
-🚦 Project Status
-✅ Core backend implemented
-✅ ML models integrated
-✅ Agentic decision layer working (API-triggered)
-✅ Dashboard available
-⚠️ Docker support optional / under improvement
+### 🚦 Project Status
+- ✅ Core backend implemented
+- ✅ ML models integrated
+- ✅ Agentic decision layer working (API-triggered)
+- ✅ Dashboard available
+- ⚠️ Docker support optional / under improvement
 
-🧰 Local Setup (Without Docker)
-# Clone repo
+## 🧰 Local Setup (Without Docker)
+### Clone repo
 git clone https://github.com/AvaniNGoswami/Auto-pilot-engineer.git
 cd auto-pilot-engineer
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+### Create virtual environment
+- python -m venv venv
+- source venv/bin/activate  # Windows: venv\Scripts\activate
 
-# Install dependencies
+### Install dependencies
 pip install -r requirements.txt
 
-# Configure environment
+### Configure environment
 cp .env.example .env
 
-# Run server
-uvicorn app.main:app --reload
+### Run server
+- uvicorn app.main:app --reload
 
-🐳 Docker (Optional)
-Docker support is under improvement due to ML dependencies.
-docker-compose up --build
+### 🐳 Docker (Optional)
+- Docker support is under improvement due to ML dependencies.
+- docker-compose up --build
 
-🧠 What This Project Proves
-•	Systems-level thinking
-•	Human-centered AI design
-•	Personalized ML modeling
-•	Agentic AI architecture
-•	Full-stack backend engineering
-•	Explainable AI
+### 🧠 What This Project Proves
+- Systems-level thinking
+- Human-centered AI design
+- Personalized ML modeling
+- Agentic AI architecture
+- Full-stack backend engineering
+- Explainable AI
 
-⚖️ Ethics & Privacy
-•	Opt-in data collection only
-•	Metadata-based, no content inspection
-•	Explainable decisions
-•	User-controlled feedback
+### ⚖️ Ethics & Privacy
+- Opt-in data collection only
+- Metadata-based, no content inspection
+- Explainable decisions
+- User-controlled feedback
 
-📈 Future Enhancements
-•	Real GitHub/GitLab API integration
-•	IDE plugins for real-time activity signals
-•	Reinforcement learning for adaptive suggestions
-•	Team-level anonymized insights
-•	Advanced time-series models
+### 📈 Future Enhancements
+- Reinforcement learning for adaptive suggestions
+- Team-level anonymized insights
+- Advanced time-series models
 ________________________________________
 👤 Author
 Avani N. Goswami :
+
 AI / Backend Developer
 ________________________________________
 ⭐ Final Note
