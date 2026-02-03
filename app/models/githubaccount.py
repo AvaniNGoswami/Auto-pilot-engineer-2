@@ -7,5 +7,5 @@ class GitHubAccount(Base):
     id = Column(String, primary_key=True)
     userid = Column(String, ForeignKey("users.id", ondelete="CASCADE"))
     github_username = Column(String)
-    access_token = Column(String)   # encrypt later, plain for demo
+    access_token = Column(String)   
     created_at = Column(DateTime, default=datetime.utcnow)

@@ -57,7 +57,6 @@ def decode_access_token(token:str) -> dict:
 
 
 def get_current_user(token:str=Depends(oath2_schema)) -> User:
-    print("🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥TOKEN RECEIVED:", token)
     payload = decode_access_token(token)
     user_id = payload["sub"]
     jti = payload["jti"]

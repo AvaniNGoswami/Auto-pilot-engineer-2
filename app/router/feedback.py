@@ -22,21 +22,6 @@ class feedbackresponse(BaseModel):
 
 router = APIRouter(prefix="/feedback",tags=["Feedback"])
 
-# @router.post("/",response_model=feedbackresponse)
-# def get_feedback(feedback:feedbackrequest, current_user = Depends(get_current_user)):
-#     with Session(engine) as session:
-#         feature = Feedback(
-#             id = str(uuid4()),
-#             userid = current_user.id,
-#             suggestion = feedback.suggestion,
-#             accepted = feedback.accepted
-#         )
-#         session.add(feature)
-#         session.commit()
-#         session.refresh(feature     )
-#     return feedbackresponse(message="Got feedback and saved succesfully")
-
-
 @router.post("/")
 def update_feedback(data: feedbackrequest, current_user = Depends(get_current_user)):
     with Session(engine) as session:

@@ -1,4 +1,3 @@
-import joblib
 from sklearn.ensemble import RandomForestClassifier
 from app.services.ml_prepare import load_dataframe
 import cloudpickle as pickle
@@ -21,7 +20,6 @@ def train_burnout():
     model = RandomForestClassifier()
     model.fit(X,y)
 
-    # joblib.dump(model,'app/models_storage/burnout.pkl')
     pickle.dump(model, open("app/models_storage/burnout.pkl","wb"))
 
     print('😊 model saved')
