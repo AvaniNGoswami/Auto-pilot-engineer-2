@@ -1,11 +1,10 @@
 # 🚀Auto-pilot-engineer
-An AI-powered productivity intelligence system for developers
 Auto-Pilot Engineer is an semi autonomous AI co-pilot that observes developer work patterns, learns personal productivity trends, and provides actionable suggestions to improve focus and prevent burnout — all without surveillance or micromanagement.
 
 One-line pitch:
 Auto-Pilot Engineer collects developer activity metadata, predicts productivity and fatigue levels, and provides suggestions and explanations to help developers work smarter, not longer.
 
-🧠 Why This Project Exists
+Why This Project Exists
 Modern developers face:
 - Long working hours
 - Constant context switching
@@ -20,15 +19,16 @@ Productivity apps	   Generic advice
 Managers	           Guess productivity
 No existing system understands how developers actually work. Auto-Pilot Engineer is designed to learn behavioural patterns, not just count hours.
 
-🎯 What Auto-Pilot Engineer Does
+## 🎯 What Auto-Pilot Engineer Does
 Auto-Pilot Engineer acts as a silent AI co-pilot that:
+
 1.	Observes work patterns (metadata only)
 -	Collects GitHub activity events via webhooks.
 -	Collects developer activity metadata via GitHub API:
 	 - Commits
 	 - Timestamps
  	 - Activity frequency
--   Manual session tracker UI for:
+-   Manual session tracker for:
 	 - Work start / end
  	 - Break / work tracking
 -	No code or private content is accessed; all data is opt-in.
@@ -37,12 +37,7 @@ Auto-Pilot Engineer acts as a silent AI co-pilot that:
 -	Predicts:
      - Productivity score
      - Burnout/fatigue risk
-3.	Detects fatigue and burnout risk
--	Historical features are analysed to identify:
-	 - Consecutive long days
-	 - Declining output
-	 - Skipped breaks
--	Outputs Low / Medium / High burnout risk and fatigue trends.
+	 - Outputs Low / Medium / High burnout risk and fatigue trends.
 4.	Agentic decision layer (autonomous core)
 -	Observer Agent -> gathers recent activity features
 -	Analyzer Agent -> predicts productivity & burnout
@@ -62,8 +57,8 @@ What it does NOT do:
 -	❌ Read code or private content
 -	❌ Force schedules
 -	❌ Punish breaks
-________________________________________
-👥 Target Users
+
+### 👥 Target Users
 Primary:
 -	Remote developers
 -	Freelancers
@@ -73,18 +68,19 @@ Secondary (Optional):
 -	Team leads (aggregated insights only)
 -	Remote-first companies (opt-in)
 
-🏗️ System Architecture (High-Level)
+### System Architecture (High-Level)
 - Developer Activity
 - Signal Extraction (GitHub + manual session start / end)
-- Feature Engineering / Pattern Learning (ML)
+- feature engineering pipeline to compute features at a specified interval of time
+- Pattern Learning (ML)
 - Agentic Reasoning (Observer → Analyzer → Intervention → Orchestrator)
 - Action / Suggestion
 - Feedback Storage & Future Learning
-- In - Out API to recored the session 
+- In - Out API to record the session 
   
 This loop operates continuously whenever APIs are called.
 
-🧩 Core Modules
+### 🧩 Core Modules
 1.	Activity Signal Collector
 -	Collects metadata (GitHub commits, session start/end, breaks, time of day,).
 -	All data is opt-in.
@@ -103,9 +99,8 @@ This loop operates continuously whenever APIs are called.
 -	Optional embeddings for context; LLM integration is planned.
 6.	Feedback System
 -	Feedback is recorded with acceptance and rating.
--	Currently supports future learning and analysis; not real-time model retraining.
 
-🖥️ What Users See
+## 🖥️ What Users See
 
 Dashboard Overview
 
@@ -134,28 +129,28 @@ Autopilot Effectiveness Score (AES):
 - Measures the impact of agent suggestions over time by comparing metrics before and after accepted suggestions.
 - Includes: Focus, Fatigue, Context Switching
 - Displays % change and descriptive insights:
-	- ✅ Strong Positive Impact
+	   - ✅ Strong Positive Impact
        - 🟡 Moderate Positive Impact
        - ⚪ Neutral Impact
        - ❌ Negative Impact
 
-Interactive Features:
+### Interactive Features:
 - Metrics update dynamically using SQLAlchemy queries from the database.
 - Charts and AES help users understand trends and the effectiveness of Auto-Pilot guidance.
 
-Smart Suggestion:
+### Smart Suggestion:
 - “You're doing okay, maintain rhythm.
 - “Low productivity — try a 25-minute-deep work sprint.
 - No spam; only high-signal interventions.
 
-🛠️ Tech Stack
+## 🛠️ Tech Stack
 Backend: FastAPI, SQLAlchemy / SQLModel, PostgreSQL, JWT Auth
 ML / Data: Pandas, NumPy, scikit-learn, Feature engineering
 AI / NLP : Sentence Transformers
 Dashboard: Streamlit 
 DevOps (Optional): Docker, Docker Compose
 
-🧪 Features Implemented
+### 🧪 Features Implemented
 - Activity logging API (GitHub + manual session start / end events)
 - Feature engineering pipeline
 - ML models for productivity and burnout
@@ -166,36 +161,36 @@ DevOps (Optional): Docker, Docker Compose
 - Interactive dashboard
 - In - Out API to start and end seesion
 
-🚦 Project Status
+### 🚦 Project Status
 - ✅ Core backend implemented
 - ✅ ML models integrated
 - ✅ Agentic decision layer working (API-triggered)
 - ✅ Dashboard available
 - ⚠️ Docker support optional / under improvement
 
-🧰 Local Setup (Without Docker)
-# Clone repo
+## 🧰 Local Setup (Without Docker)
+### Clone repo
 git clone https://github.com/AvaniNGoswami/Auto-pilot-engineer.git
 cd auto-pilot-engineer
 
-# Create virtual environment
+### Create virtual environment
 - python -m venv venv
 - source venv/bin/activate  # Windows: venv\Scripts\activate
 
-# Install dependencies
+### Install dependencies
 pip install -r requirements.txt
 
-# Configure environment
+### Configure environment
 cp .env.example .env
 
-# Run server
+### Run server
 - uvicorn app.main:app --reload
 
-🐳 Docker (Optional)
+### 🐳 Docker (Optional)
 - Docker support is under improvement due to ML dependencies.
 - docker-compose up --build
 
-🧠 What This Project Proves
+### 🧠 What This Project Proves
 - Systems-level thinking
 - Human-centered AI design
 - Personalized ML modeling
@@ -203,13 +198,13 @@ cp .env.example .env
 - Full-stack backend engineering
 - Explainable AI
 
-⚖️ Ethics & Privacy
+### ⚖️ Ethics & Privacy
 - Opt-in data collection only
 - Metadata-based, no content inspection
 - Explainable decisions
 - User-controlled feedback
 
-📈 Future Enhancements
+### 📈 Future Enhancements
 - Reinforcement learning for adaptive suggestions
 - Team-level anonymized insights
 - Advanced time-series models
