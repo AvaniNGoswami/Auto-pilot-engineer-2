@@ -9,9 +9,8 @@ import atexit
 import os
 import uvicorn
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8000))
-    uvicorn.run("main:app", host="0.0.0.0", port=port)
+
+
 
 
 app = FastAPI(title="Auto Pilot Engineer")
@@ -32,6 +31,7 @@ app.include_router(in_out.router)
 
 scheduler = BackgroundScheduler()
 
+
 def start_scheduler():
     scheduler.add_job(
         run_feature_engineering,
@@ -46,6 +46,7 @@ def start_scheduler():
 atexit.register(lambda: scheduler.shutdown())
 
 @app.on_event("startup")
-def startup_event():
+async def startup_event():
     start_scheduler()
+
 
