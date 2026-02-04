@@ -1,9 +1,10 @@
+import os
 from huggingface_hub import InferenceClient
 from pyparsing import lru_cache
 
 client = InferenceClient(
     model="sentence-transformers/all-MiniLM-L6-v2",
-    token="REMOVEDwUnpsMAfVrDFPOfuGnWgLqkCfwNMzDvSkJ"
+    token=os.getenv("HF_TOKEN")
 )
 
 @lru_cache(maxsize=200)
