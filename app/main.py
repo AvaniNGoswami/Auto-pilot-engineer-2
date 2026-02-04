@@ -6,6 +6,13 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from app.services.feature_engineering import run_feature_engineering
 import atexit
+import os
+import uvicorn
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port)
+
 
 app = FastAPI(title="Auto Pilot Engineer")
 
