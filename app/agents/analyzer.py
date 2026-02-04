@@ -1,4 +1,4 @@
-import cloudpickle as pickle
+# import cloudpickle as pickle
 import numpy as np
 from app.services.modal_loader import load_model
 # model_prod = pickle.load(open("app/models_storage/productivity.pkl","rb"))
