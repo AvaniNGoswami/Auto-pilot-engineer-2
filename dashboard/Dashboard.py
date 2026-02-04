@@ -91,16 +91,16 @@ else:
     st.info("📈 You worked okay—try reducing context switches.")
 
 
-st.subheader("Work vs Break Minutes (Hourly)")
+st.subheader("Work vs Break Minutes (Monthly)")
 st.line_chart(df.set_index('datetime')[['total work', 'total break']])
 
-st.subheader("Focus Trend (Hourly)")
+st.subheader("Focus Trend (Monthly)")
 st.line_chart(df.set_index('datetime')['focus score'])
 
-st.subheader("Context Switch Trend (Hourly)")
+st.subheader("Context Switch Trend (Monthly)")
 st.line_chart(df.set_index('datetime')['context switch'])
 
-st.subheader("Fatigue Trend (Hourly)")
+st.subheader("Fatigue Trend (Monthly)")
 st.line_chart(df.set_index('datetime')['fatigue score'])
 
 
