@@ -1,9 +1,12 @@
 import cloudpickle as pickle
 import numpy as np
+from app.services.modal_loader import load_model
+# model_prod = pickle.load(open("app/models_storage/productivity.pkl","rb"))
 
-model_prod = pickle.load(open("app/models_storage/productivity.pkl","rb"))
-model_burn = pickle.load(open("app/models_storage/burnout.pkl","rb"))
+model_prod = load_model("productivity")
 
+# model_burn = pickle.load(open("app/models_storage/burnout.pkl","rb"))
+model_burn = load_model("burnout")
 def analyze(features):
     if not features:
         return None
