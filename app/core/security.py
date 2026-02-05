@@ -4,7 +4,8 @@ from fastapi import Depends, HTTPException, status
 # from fastapi.security import OAuth2PasswordBearer
 from app.core.config import SECRET_KEY, ACCESS_TOKEN_EXPIRE, ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM
 import jwt
-from jwt import PyJWTError
+# from jwt import PyJWTError
+from jwt.exceptions import PyJWTError
 from app.models.user import User
 from app.models.auth_session import AuthSession
 from sqlalchemy.orm import Session
@@ -48,14 +49,39 @@ def create_access_token(user_id:str, expires_delta:Optional[timedelta]=None) -> 
 
 
 
-def decode_access_token(token:str) -> dict:
+# def decode_access_token(token:str) -> dict:
+#     try:
+#         payload = jwt.decode(token,SECRET_KEY,algorithms=[ALGORITHM])
+#         if "sub" not in payload or "jti" not in payload:
+#             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="invalid token payload")
+#         return payload
+#     except PyJWTError:
+#         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="invalid or expired token", headers={"WWW-Authentication":"Bearer"})
+
+
+
+def decode_access_token(token: str) -> dict:
     try:
-        payload = jwt.decode(token,SECRET_KEY,algorithms=[ALGORITHM])
+        payload = jwt.decode(
+            token,
+            SECRET_KEY,
+            algorithms=[ALGORITHM]
+        )
+
         if "sub" not in payload or "jti" not in payload:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="invalid token payload")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="invalid token payload"
+            )
+
         return payload
+
     except PyJWTError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="invalid or expired token", headers={"WWW-Authentication":"Bearer"})
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="invalid or expired token",
+            headers={"WWW-Authenticate": "Bearer"}
+        )
 
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security)
