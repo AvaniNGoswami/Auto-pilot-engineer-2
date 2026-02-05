@@ -75,24 +75,59 @@
 
 # app/services/embed_service.py
 
-import os
-from huggingface_hub import InferenceClient
-from functools import lru_cache
+# import os
+# from huggingface_hub import InferenceClient
+# from functools import lru_cache
 
-print("HF_TOKEN at import time:", os.getenv("HF_TOKEN"))
+# print("HF_TOKEN at import time:", os.getenv("HF_TOKEN"))
 
-HF_TOKEN = os.getenv("HF_TOKEN")
+# HF_TOKEN = os.getenv("HF_TOKEN")
 
-if not HF_TOKEN:
-    raise RuntimeError("HF_TOKEN is missing at runtime")
+# if not HF_TOKEN:
+#     raise RuntimeError("HF_TOKEN is missing at runtime")
 
-client = InferenceClient(
-    model="sentence-transformers/all-MiniLM-L6-v2",
-    token=HF_TOKEN
-)
+# client = InferenceClient(
+#     model="sentence-transformers/all-MiniLM-L6-v2",
+#     token=HF_TOKEN
+# )
 
-@lru_cache(maxsize=200)
-def embed_text(texts):
-    if isinstance(texts, str):
-        texts = [texts]
-    return client.feature_extraction(texts)
+# @lru_cache(maxsize=200)
+# def embed_text(texts):
+#     if isinstance(texts, str):
+#         texts = [texts]
+#     return client.feature_extraction(texts)
+
+
+
+def embed_message(messages):
+    """
+    No embeddings anymore.
+    Kept only to avoid breaking existing imports.
+    """
+    return messages
+def get_most_relevant_message(suggestion, messages):
+    """
+    Simple fallback:
+    pick the most recent / last message as context
+    """
+    if not messages:
+        return None
+    return messages[-1]
+def generate_natural_explanation(suggestion, context_msg=None):
+    """
+    Template-based explanation (NO ML, NO API)
+    """
+
+    suggestion = suggestion.rstrip(".")
+
+    if context_msg:
+        return (
+            f"{suggestion}. "
+            f"This recommendation is based on your recent activity, "
+            f"such as: {context_msg}."
+        )
+
+    return (
+        f"{suggestion}. "
+        f"This recommendation is based on your recent activity."
+    )
