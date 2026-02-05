@@ -10,8 +10,40 @@ from app.models.auth_session import AuthSession
 from fastapi.security import OAuth2PasswordBearer
 from app.db.database import engine
 from uuid import uuid4
+from pydantic import BaseModel
+from sqlalchemy.orm import Session
+from app.db.database import engine
+from app.models.user import User
+from uuid import uuid4
+from datetime import datetime
+
+class dataforregister(BaseModel):
+    name:str
+    role:str
+    github_id:str
+    email:str
+
 
 router = APIRouter(prefix="/auth",tags=["Auth"])
+
+@router.post("/register")
+def register(data:dataforregister):
+    with Session(engine) as session:
+        user = User(
+            id = str(uuid4()),
+            name = data.name,
+            role = data.role,
+            github_id = data.github_id,
+            email = data.email,
+            created_at = datetime.utcnow()
+        )
+        session.add(user)
+    session.commit()
+    token = create_access_token(user_id=user.id)
+    return {"access_token":token, "token_type":"Bearer"}
+
+
+
 
 @router.post("/login")
 def login(email:str):
