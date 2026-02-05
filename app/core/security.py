@@ -73,6 +73,7 @@ def create_access_token(user_id: str) -> str:
             )
         )
         session.commit()
+    print("🔥🔥🔥🔥🔥🔥🔥🔥SIGNING TOKEN WITH SECRET:", SECRET_KEY)
 
     return token
 
@@ -91,17 +92,20 @@ def create_access_token(user_id: str) -> str:
 
 def decode_access_token(token: str) -> dict:
     try:
+        print("🔥🔥🔥🔥🔥TOKEN RECEIVED:", token)
         payload = jwt.decode(
             token,
             SECRET_KEY,
             algorithms=[ALGORITHM]
         )
+        print("🔥🔥🔥🔥🔥🔥🔥PAYLOAD:", payload)
 
         if "sub" not in payload or "jti" not in payload:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="invalid token payload"
             )
+        print("🔥🔥🔥🔥🔥🔥SIGNING TOKEN WITH SECRET:", SECRET_KEY)
 
         return payload
 
