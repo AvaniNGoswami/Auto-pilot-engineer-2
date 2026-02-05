@@ -20,7 +20,8 @@ def login(email:str):
         if not user:
             raise HTTPException(status_code=400,detail="invalid credentials")
 
-    token = create_access_token(user_id=user.id,expires_delta=timedelta(days=1))
+    # token = create_access_token(user_id=user.id,expires_delta=timedelta(days=1))
+    token = create_access_token(user_id=user.id)
     return {"access_token":token, "token_type":"Bearer"}
 
 
