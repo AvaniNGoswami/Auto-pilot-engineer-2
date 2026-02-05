@@ -119,7 +119,8 @@ def decode_access_token(token: str) -> dict:
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security)
 ) -> User:
-    token = credentials.credentials
+    token = credentials.credentials.replace("Bearer ", "")
+
     payload = decode_access_token(token)
 
     user_id = payload["sub"]
