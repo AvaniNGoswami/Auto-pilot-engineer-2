@@ -32,21 +32,21 @@ app.include_router(in_out.router)
 scheduler = BackgroundScheduler()
 
 
-def start_scheduler():
-    scheduler.add_job(
-        run_feature_engineering,
-        trigger=IntervalTrigger(minutes=2),
-        id="feature_job",
-        replace_existing=True,
-    )
-    scheduler.start()
-    print("🕒 APScheduler started... ")
+# def start_scheduler():
+#     scheduler.add_job(
+#         run_feature_engineering,
+#         trigger=IntervalTrigger(minutes=2),
+#         id="feature_job",
+#         replace_existing=True,
+#     )
+#     scheduler.start()
+#     print("🕒 APScheduler started... ")
 
 
-atexit.register(lambda: scheduler.shutdown())
+# atexit.register(lambda: scheduler.shutdown())
 
-@app.on_event("startup")
-async def startup_event():
-    start_scheduler()
+# @app.on_event("startup")
+# async def startup_event():
+#     start_scheduler()
 
 
