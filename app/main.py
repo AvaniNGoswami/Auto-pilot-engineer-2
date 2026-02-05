@@ -29,7 +29,7 @@ app.include_router(github_api.router)
 app.include_router(in_out.router)
 
 
-scheduler = BackgroundScheduler()
+# scheduler = BackgroundScheduler()
 
 
 # def start_scheduler():
