@@ -17,25 +17,26 @@
 #     return client.feature_extraction(texts)
 
 
+# embed_service.py
+import os
+from huggingface_hub import InferenceClient
+from functools import lru_cache
 
-# import os
-# from huggingface_hub import InferenceClient
-# from functools import lru_cache
+@lru_cache(maxsize=1)
+def get_hf_client():
+    token = os.getenv("HF_TOKEN")
+    if not token:
+        raise RuntimeError("HF_TOKEN missing at runtime")
 
-# HF_TOKEN = os.getenv("HF_TOKEN")
-# if not HF_TOKEN:
-#     raise RuntimeError("HF_TOKEN is missing at startup")
+    return InferenceClient(
+        model="sentence-transformers/all-MiniLM-L6-v2",
+        token=token
+    )
 
-# client = InferenceClient(
-#     model="sentence-transformers/all-MiniLM-L6-v2",
-#     token=HF_TOKEN
-# )
+def embed_text(texts):
+    print("HF_TOKEN at runtime:", bool(os.getenv("HF_TOKEN")))
+    if isinstance(texts, str):
+        texts = [texts]
 
-# @lru_cache(maxsize=200)
-# def embed_text(texts):
-#     if isinstance(texts, str):
-#         texts = (texts,)
-#     elif isinstance(texts, list):
-#         texts = tuple(texts)
-
-#     return client.feature_extraction(list(texts))
+    client = get_hf_client()
+    return client.feature_extraction(texts)

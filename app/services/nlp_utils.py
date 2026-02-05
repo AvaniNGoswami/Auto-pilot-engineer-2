@@ -1,26 +1,26 @@
-import numpy as np
-from sentence_transformers import SentenceTransformer 
+# import numpy as np
+# from sentence_transformers import SentenceTransformer 
 
-embed_model = SentenceTransformer('all-MiniLM-L6-v2')
+# embed_model = SentenceTransformer('all-MiniLM-L6-v2')
 
-def embed_message(messages):
-    return embed_model.encode(messages)
+# def embed_message(messages):
+#     return embed_model.encode(messages)
 
-def get_most_relevant_message(suggestion,messages):
-    sugg_embed = embed_model.encode([suggestion])
-    msg_embed = embed_model.encode(messages)
-    similarities = np.dot(msg_embed,sugg_embed.T).flatten()
-    idx = np.argmax(similarities)
-    return messages[idx]
-
-
-def generate_natural_explanation(suggestion, context_msg = None):
-    prompt = f'explain the productivity suggestion in simple terms: {suggestion}'
-    if context_msg:
-        prompt+= f'related to recent activity {context_msg}'
+# def get_most_relevant_message(suggestion,messages):
+#     sugg_embed = embed_model.encode([suggestion])
+#     msg_embed = embed_model.encode(messages)
+#     similarities = np.dot(msg_embed,sugg_embed.T).flatten()
+#     idx = np.argmax(similarities)
+#     return messages[idx]
 
 
-    return f'{suggestion} consider this based on recent activity : {context_msg or "N/A"} '
+# def generate_natural_explanation(suggestion, context_msg = None):
+#     prompt = f'explain the productivity suggestion in simple terms: {suggestion}'
+#     if context_msg:
+#         prompt+= f'related to recent activity {context_msg}'
+
+
+#     return f'{suggestion} consider this based on recent activity : {context_msg or "N/A"} '
 
 
 
@@ -75,24 +75,24 @@ def generate_natural_explanation(suggestion, context_msg = None):
 
 # app/services/embed_service.py
 
-# import os
-# from huggingface_hub import InferenceClient
-# from functools import lru_cache
+import os
+from huggingface_hub import InferenceClient
+from functools import lru_cache
 
-# print("HF_TOKEN at import time:", os.getenv("HF_TOKEN"))
+print("HF_TOKEN at import time:", os.getenv("HF_TOKEN"))
 
-# HF_TOKEN = os.getenv("HF_TOKEN")
+HF_TOKEN = os.getenv("HF_TOKEN")
 
-# if not HF_TOKEN:
-#     raise RuntimeError("HF_TOKEN is missing at runtime")
+if not HF_TOKEN:
+    raise RuntimeError("HF_TOKEN is missing at runtime")
 
-# client = InferenceClient(
-#     model="sentence-transformers/all-MiniLM-L6-v2",
-#     token=HF_TOKEN
-# )
+client = InferenceClient(
+    model="sentence-transformers/all-MiniLM-L6-v2",
+    token=HF_TOKEN
+)
 
-# @lru_cache(maxsize=200)
-# def embed_text(texts):
-#     if isinstance(texts, str):
-#         texts = [texts]
-#     return client.feature_extraction(texts)
+@lru_cache(maxsize=200)
+def embed_text(texts):
+    if isinstance(texts, str):
+        texts = [texts]
+    return client.feature_extraction(texts)
