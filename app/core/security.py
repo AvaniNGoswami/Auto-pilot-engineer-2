@@ -4,8 +4,8 @@ from fastapi import Depends, HTTPException, status
 # from fastapi.security import OAuth2PasswordBearer
 from app.core.config import SECRET_KEY, ACCESS_TOKEN_EXPIRE, ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM
 import jwt
-# from jwt import PyJWTError
-from jwt.exceptions import PyJWTError
+from jwt import PyJWTError
+
 from app.models.user import User
 from app.models.auth_session import AuthSession
 from sqlalchemy.orm import Session
@@ -17,35 +17,64 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 security = HTTPBearer()
 
-def create_access_token(user_id:str, expires_delta:Optional[timedelta]=None) -> str:
+# def create_access_token(user_id:str, expires_delta:Optional[timedelta]=None) -> str:
+#     jti = str(uuid4())
+#     expire = (
+#     datetime.utcnow() + expires_delta
+#     if expires_delta
+#     else datetime.utcnow() + ACCESS_TOKEN_EXPIRE
+#     )
+
+#     payload = {
+#                 "sub":user_id,
+#                 "jti":jti,
+#                 "iat":datetime.utcnow(),
+#                 "exp":expire,
+#     }
+#     token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+#     with Session(engine) as session:
+#         auth_session = AuthSession(
+#             id = str(uuid4()),
+#             user_id = user_id,
+#             token_id = jti,
+#             is_active = True,
+#             created_at = datetime.utcnow()
+#         )
+#         session.add(auth_session)
+#         session.commit()
+#     return token
+
+
+
+def create_access_token(user_id: str) -> str:
     jti = str(uuid4())
-    expire = (
-    datetime.utcnow() + expires_delta
-    if expires_delta
-    else datetime.utcnow() + ACCESS_TOKEN_EXPIRE
+
+    expire = datetime.utcnow() + timedelta(
+        minutes=ACCESS_TOKEN_EXPIRE_MINUTES
     )
 
     payload = {
-                "sub":user_id,
-                "jti":jti,
-                "iat":datetime.utcnow(),
-                "exp":expire,
+        "sub": user_id,
+        "jti": jti,
+        "iat": datetime.utcnow(),
+        "exp": expire,
     }
+
     token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+
     with Session(engine) as session:
-        auth_session = AuthSession(
-            id = str(uuid4()),
-            user_id = user_id,
-            token_id = jti,
-            is_active = True,
-            created_at = datetime.utcnow()
+        session.add(
+            AuthSession(
+                id=str(uuid4()),
+                user_id=user_id,
+                token_id=jti,
+                is_active=True,
+                created_at=datetime.utcnow(),
+            )
         )
-        session.add(auth_session)
         session.commit()
+
     return token
-
-
-
 
 
 
