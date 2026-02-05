@@ -50,12 +50,12 @@ def create_access_token(user_id:str, expires_delta:Optional[timedelta]=None) -> 
 
 def decode_access_token(token:str) -> dict:
     try:
-        payload = jwt.decode(token,SECRET_KEY,ALGORITHM)
+        payload = jwt.decode(token,SECRET_KEY,algorithms=[ALGORITHM])
         if "sub" not in payload or "jti" not in payload:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="invalid token payload")
         return payload
-    except:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="invalid or ixpired token", headers={"WWW-Authentication":"Bearer"})
+    except PyJWTError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="invalid or expired token", headers={"WWW-Authentication":"Bearer"})
 
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security)
