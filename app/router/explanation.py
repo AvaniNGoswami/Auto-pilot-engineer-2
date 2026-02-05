@@ -17,7 +17,7 @@ router = APIRouter(prefix='/explain', tags=['Explanation'])
 @router.post('/',response_model=response_model)
 def explain(data : request_model, current_user=Depends(get_current_user)):
     with Session(engine) as session:
-        messages = session.query(ActivityText).filter(ActivityText.userid==current_user.id).all()
+        messages = session.query(ActivityText).filter(ActivityText.userid==current_user.id).order_by(ActivityText.date.desc()).limit(20).all()
         messages = [m.message for m in messages]
     
     if not messages:
