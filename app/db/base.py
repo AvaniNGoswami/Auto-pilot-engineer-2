@@ -4,7 +4,7 @@ Base = declarative_base()
 
 from app.models.activity_text import ActivityText
 from app.models.githubaccount import GitHubAccount
-from app.models.githubaccount import GitHubAccount
+from app.models.in_out import In_Out
 # from app.models.feedback import Feedback
 
 # from app.models.activity import ActivityEvent
