@@ -24,7 +24,6 @@
 
 
 
-from app.services.embed_service import embed_text
 import numpy as np
 from app.services.embed_service import embed_text
 
@@ -36,20 +35,33 @@ def embed_message(messages):
     return embed_text(messages)
 
 
+# def get_most_relevant_message(suggestion, messages):
+
+#     # Get embedding for suggestion
+#     sugg_embed = np.array(embed_text([suggestion]))
+
+#     # Get embeddings for messages
+#     msg_embed = np.array(embed_text(messages))
+
+#     # Cosine-like similarity using dot product
+#     similarities = np.dot(msg_embed, sugg_embed.T).flatten()
+
+#     idx = np.argmax(similarities)
+
+#     return messages[idx]
+
 def get_most_relevant_message(suggestion, messages):
+    sugg_embed = np.array(embed_text(suggestion))
 
-    # Get embedding for suggestion
-    sugg_embed = np.array(embed_text([suggestion]))
+    msg_embeds = np.array([
+        embed_text(msg) for msg in messages
+    ])
 
-    # Get embeddings for messages
-    msg_embed = np.array(embed_text(messages))
-
-    # Cosine-like similarity using dot product
-    similarities = np.dot(msg_embed, sugg_embed.T).flatten()
+    similarities = np.dot(msg_embeds, sugg_embed)
 
     idx = np.argmax(similarities)
-
     return messages[idx]
+
 
 
 def generate_natural_explanation(suggestion, context_msg=None):
