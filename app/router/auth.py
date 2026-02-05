@@ -39,6 +39,7 @@ def register(data:dataforregister):
         )
         session.add(user)
     session.commit()
+    session.refresh(user)
     token = create_access_token(user_id=user.id)
     return {"access_token":token, "token_type":"Bearer"}
 
