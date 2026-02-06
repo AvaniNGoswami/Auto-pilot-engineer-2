@@ -123,7 +123,8 @@ def get_current_user(
 
     payload = decode_access_token(token)
 
-    user_id = payload["user_id"]
+    # user_id = payload["sub"]
+    user_id = payload.get("user_id") or payload.get("sub")
     jti = payload["jti"]
 
     with Session(engine) as session:
