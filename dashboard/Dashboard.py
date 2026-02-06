@@ -19,8 +19,8 @@ st.set_page_config(page_title="Auto-Pilot Engineer Dashboard", layout="wide")
 API_BASE = os.getenv("API_BASE", "https://auto-pilot-engineer-production.up.railway.app")
 
 def login_user(email):
-    resp = requests.post(url=f"{API_BASE}/auth/login", params={"email": email})
-    # resp = requests.post(url=f"{API_BASE}/auth/login", data={"email": email})
+    # resp = requests.post(url=f"{API_BASE}/auth/login", params={"email": email})
+    resp = requests.post(url=f"{API_BASE}/auth/login", data={"email": email})
     if resp.status_code != 200:
         return None
     return resp.json()['access_token']
@@ -45,7 +45,7 @@ if 'token' not in st.session_state:
 def get_current_user_from_api():
     resp = requests.get(
         url=f"{API_BASE}/me",
-        headers={"Authorization": f"{st.session_state.token}"}
+        headers={"Authorization": f"Bearer {st.session_state.token}"}
     )
     resp.raise_for_status()
     return resp.json()
