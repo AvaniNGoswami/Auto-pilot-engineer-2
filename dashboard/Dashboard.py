@@ -45,7 +45,7 @@ if 'token' not in st.session_state:
 def get_current_user_from_api():
     resp = requests.get(
         url=f"{API_BASE}/me",
-        headers={"Authorization": f"Bearer {st.session_state.token}"}
+        headers={"Authorization": f"{st.session_state.token}"}
     )
     resp.raise_for_status()
     return resp.json()
