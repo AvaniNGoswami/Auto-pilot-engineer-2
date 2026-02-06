@@ -16,13 +16,16 @@ import os
 st.set_page_config(page_title="Auto-Pilot Engineer Dashboard", layout="wide")
 
 # API_BASE = os.getenv("API_BASE", "http://127.0.0.1:8000")
-API_BASE = os.getenv("API_BASE", "https://auto-pilot-engineer-production.up.railway.app/")
+API_BASE = os.getenv("API_BASE", "https://auto-pilot-engineer-production.up.railway.app")
 
 def login_user(email):
-    resp = requests.post(url=f"{API_BASE}/auth/login", params={"email": email})
+    # resp = requests.post(url=f"{API_BASE}/auth/login", params={"email": email})
+    resp = requests.post(url=f"{API_BASE}/auth/login", data={"email": email})
     if resp.status_code != 200:
         return None
     return resp.json()['access_token']
+    # data = resp.json()
+    # return data.get('access_token')
 
 st.title("Login for Dashboard")
 email = st.text_input("Enter your email")
