@@ -3,17 +3,9 @@ from app.db.database import engine
 from app.models.features import Features
 from uuid import uuid4
 from datetime import date, timedelta
-from app.models.user import User
 from random import randint, uniform
 
 with Session(engine) as session:
-    # id = '8529bd10-6f51-49b3-a9ff-3ec9edb331ab'
-    # name = "anu"
-    # role = "developer"
-    # user = User(id=id,name=name,role=role)
-    # session.add(user)
-    # session.commit()
-    # session.refresh(user)
 
     for i in range(500):
         d=date.today()

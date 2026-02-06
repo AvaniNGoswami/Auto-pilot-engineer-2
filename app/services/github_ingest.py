@@ -1,8 +1,6 @@
 from sqlalchemy.orm import Session
 from app.db.database import engine
-from app.models.activity import ActivityEvent
 from app.models.activity_text import ActivityText
-from app.models.user import User
 from app.models.githubaccount import GitHubAccount
 import requests
 from uuid import uuid4
@@ -25,9 +23,6 @@ def ingest_github_activity(user_id:str):
             "Authorization": f"token {gh_account.access_token}",
             "Accept": "application/vnd.github+json"
         }
-
-
-
         page = 1
         repos = []
         while True:

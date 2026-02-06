@@ -28,23 +28,3 @@ async def startup_event():
     thread.daemon = True
     thread.start()
 
-# scheduler = BackgroundScheduler()
-
-
-# def start_scheduler():
-#     scheduler.add_job(
-#         run_feature_engineering,
-#         trigger=IntervalTrigger(minutes=2),
-#         id="feature_job",
-#         replace_existing=True,
-#     )
-#     scheduler.start()
-#     print("🕒 APScheduler started... ")
-
-
-# atexit.register(lambda: scheduler.shutdown())
-
-# @app.on_event("startup")
-# async def startup_event():
-#     start_scheduler()
-

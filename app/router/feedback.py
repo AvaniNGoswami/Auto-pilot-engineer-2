@@ -6,9 +6,6 @@ from app.db.database import engine
 from app.core.security import get_current_user
 from uuid import uuid4
 
-# class feedbackrequest(BaseModel):
-#     suggestion:str
-#     accepted: bool
 
 class feedbackrequest(BaseModel):
     suggestion_id:str

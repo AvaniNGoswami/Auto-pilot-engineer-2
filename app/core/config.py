@@ -1,5 +1,4 @@
 from datetime import timedelta
-import secrets
 import os
 
 DATABASE_URL = os.getenv(

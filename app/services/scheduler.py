@@ -1,5 +1,3 @@
-# app/services/scheduler.py
-
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from app.services.feature_engineering import run_feature_engineering

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
-from datetime import datetime, date
+from datetime import datetime
 from uuid import uuid4
 from app.db.database import engine
 from app.models.activity import ActivityEvent

@@ -9,5 +9,5 @@ class Feedback(Base):
     userid = Column(String, nullable=False)
     suggestion = Column(String, nullable=False)
     accepted = Column(Boolean)
-    rating = Column(Integer)  # 0-5 stars
+    rating = Column(Integer)  
     created_at = Column(DateTime, default=datetime.utcnow)
