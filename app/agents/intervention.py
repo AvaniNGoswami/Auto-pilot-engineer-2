@@ -17,20 +17,25 @@ def intervene(userid,analysis):
 
 
     fb = user_score(userid)
-    print("p🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥", p)
-    print("b🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥", b)
-
-
+    
     if fb['acceptance_rate'] is not None and fb['acceptance_rate'] <= 0.3:
-        return "📌 I notice you've skipped suggestions lately — try completing just **one small task** today 💪"
+        suggestion = "📌 I notice you've skipped suggestions lately — try completing just **one small task** today 💪"
+        record(userid, suggestion, None, None)
+        return suggestion
     
     if fb['avg_rate'] is not None and fb['avg_rate'] >= 4.0:
-        return "🔥 Love that suggestions are helping! Try increasing your weekly goals 📈"
+        suggestion= "🔥 Love that suggestions are helping! Try increasing your weekly goals 📈"
+        record(userid, suggestion, None, None)
+        return suggestion
 
     if b >= 2:
-        return "🚨 Burnout risk high! Take a long break + hydrate."
+        suggestion = "🚨 Burnout risk high! Take a long break + hydrate."
+        record(userid, suggestion, None, None)
+        return suggestion
     if 1 <= b < 2:
-        return "⚠️ Moderate stress. Try a 10-min walk."
+        suggestion = "⚠️ Moderate stress. Try a 10-min walk."
+        record(userid, suggestion, None, None)
+        return suggestion
 
     # Productivity rules (RANGES)
     if p >= 1.5:
