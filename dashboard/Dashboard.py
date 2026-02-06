@@ -42,16 +42,39 @@ if 'token' not in st.session_state:
     st.error("Please login to view dashboard")
     st.stop()
 
-def get_current_user_from_api():
-    resp = requests.get(
-        url=f"{API_BASE}/me",
-        headers={"Authorization": f"Bearer {st.session_state.token}"}
-    )
-    resp.raise_for_status()
-    return resp.json()
+# def get_current_user_from_api():
+#     resp = requests.get(
+#         url=f"{API_BASE}/me",
+#         headers={"Authorization": f"Bearer {st.session_state.token}"}
+#     )
+#     resp.raise_for_status()
+#     return resp.json()
 
-user = get_current_user_from_api()
-userid = user['id']
+# user = get_current_user_from_api()
+# userid = user['id']
+
+def get_current_user_from_api():
+    try:
+        resp = requests.get(
+            url=f"{API_BASE}/me/",
+            headers={"Authorization": f"Bearer {st.session_state.token}"}
+        )
+        resp.raise_for_status()
+        return resp.json()
+    except requests.exceptions.HTTPError as e:
+        st.error(f"Authentication Error: {e.response.status_code} - {e.response.text}")
+        if e.response.status_code == 401:
+            st.error("Your session has expired or is invalid. Please log in again.")
+            if 'token' in st.session_state:
+                del st.session_state.token
+        raise
+
+try:
+    user = get_current_user_from_api()
+    userid = user['id']
+except Exception as e:
+    st.error(f"Failed to fetch user information: {str(e)}")
+    st.stop()
 
 
 def load_data(userid):
