@@ -8,7 +8,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from app.db.database import engine
 from app.models.features import Features
 from app.models.feedback import Feedback
-from datetime import timedelta
+from datetime import timedelta,date
 import numpy as np
 import os
 
@@ -89,7 +89,10 @@ today_data = df[df['datetime'].dt.date == df['datetime'].dt.date.max()]
 today_focus = today_data['focus score'].mean()
 today_fatigue = today_data['fatigue score'].mean()
 
-st.subheader(f"Today's Metrics ({today_data['datetime'].dt.date.max()})")
+if today_data['datetime'].dt.date.max() == date.today():
+    st.subheader(f"Today's Metrics ({today_data['datetime'].dt.date.max()})")
+else :
+    st.subheader(f"Recent Metrics ({today_data['datetime'].dt.date.max()})")
 st.metric(label="Focus Score", value=round(today_focus, 2))
 st.metric(label="Fatigue Score", value=round(today_fatigue, 2))
 
