@@ -118,9 +118,9 @@ Today's Metrics:
 - Focus Score – average focus for the current day.
 - Fatigue Score – average fatigue for the current day.
 - Contextual Advice: Smart messages based on focus and fatigue, e.g.:
-	    - “🔥 You're killing it today! Keep the streak.”
-        - “⚠️ You might be burning out. Take a long break!”
-        - “📈 Work okay — try reducing context switches.”
+	- “🔥 You're killing it today! Keep the streak.”
+  	- “⚠️ You might be burning out. Take a long break!”
+  	- “📈 Work okay — try reducing context switches.”
 monthy Trends (Line Charts):
 - Work vs Break Minutes – visualize balance between work sessions and breaks.
 - Focus Trend – track focus score.
