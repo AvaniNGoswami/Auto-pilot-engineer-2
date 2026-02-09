@@ -69,6 +69,9 @@ Secondary (Optional):
 -	Remote-first companies (opt-in)
 
 ### System Architecture (High-Level)
+
+![agent layers for readme](https://github.com/user-attachments/assets/e7815ecf-f21e-4370-a0fb-80c41b283ff8)
+
 - Developer Activity
 - Signal Extraction (GitHub + manual session start / end)
 - feature engineering pipeline to compute features at a specified interval of time
