@@ -72,6 +72,8 @@ Secondary (Optional):
 
 <img width="1570" height="511" alt="image" src="https://github.com/user-attachments/assets/f2bf1ad0-0de2-4075-a8bf-0483e1ac60b6" />
 
+
+
 - Developer Activity
 - Signal Extraction (GitHub + manual session start / end)
 - feature engineering pipeline to compute features at a specified interval of time
