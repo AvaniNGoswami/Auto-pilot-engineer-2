@@ -70,7 +70,7 @@ Secondary (Optional):
 
 ### System Architecture (High-Level)
 
-![agent layers for readme](https://github.com/user-attachments/assets/e7815ecf-f21e-4370-a0fb-80c41b283ff8)
+<img width="1570" height="511" alt="image" src="https://github.com/user-attachments/assets/f2bf1ad0-0de2-4075-a8bf-0483e1ac60b6" />
 
 - Developer Activity
 - Signal Extraction (GitHub + manual session start / end)
