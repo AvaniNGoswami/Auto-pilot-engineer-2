@@ -1,5 +1,5 @@
 # 🚀Auto-pilot-engineer
-Auto-Pilot Engineer is an semi autonomous AI co-pilot that observes developer work patterns, learns personal productivity trends, and provides actionable suggestions to improve focus and prevent burnout — all without surveillance or micromanagement.
+Auto-Pilot Engineer is a semi autonomous AI co-pilot that observes developer work patterns, learns personal productivity trends, and provides actionable suggestions to improve focus and prevent burnout — all without surveillance or micromanagement.
 
 One-line pitch:
 Auto-Pilot Engineer collects developer activity metadata, predicts productivity and fatigue levels, and provides suggestions and explanations to help developers work smarter, not longer.
@@ -46,8 +46,9 @@ Auto-Pilot Engineer acts as a silent AI co-pilot that:
 5.	Provides explainable suggestions
 -	Suggestion API triggers actionable advice.
 -	Explanation API returns human-readable rationale:
-	 - Template-based explanation 
-	 - Future support for local or API-based LLMs
+	 - Template-based explanation (no ML, no embeddings)
+	 - Uses recent activity context when available
+     - Fully deterministic and explainable
 6.	Stores user feedback
 -	Users can accept/reject suggestions and provide ratings (0–5 stars).
 -	Feedback is stored in the database and can be used to improve future versions.
@@ -117,9 +118,9 @@ Today's Metrics:
 - Focus Score – average focus for the current day.
 - Fatigue Score – average fatigue for the current day.
 - Contextual Advice: Smart messages based on focus and fatigue, e.g.:
-	    -“🔥 You're killing it today! Keep the streak.”
-        -“⚠️ You might be burning out. Take a long break!”
-        -“📈 Work okay — try reducing context switches.”
+	    - “🔥 You're killing it today! Keep the streak.”
+        - “⚠️ You might be burning out. Take a long break!”
+        - “📈 Work okay — try reducing context switches.”
 monthy Trends (Line Charts):
 - Work vs Break Minutes – visualize balance between work sessions and breaks.
 - Focus Trend – track focus score.
@@ -151,7 +152,7 @@ Autopilot Effectiveness Score (AES):
 ## 🛠️ Tech Stack
 Backend: FastAPI, SQLAlchemy / SQLModel, PostgreSQL, JWT Auth
 ML / Data: Pandas, NumPy, scikit-learn, Feature engineering
-AI / NLP : Sentence Transformers
+AI / Decision Layer: Agentic reasoning, rule-based intervention logic  
 Dashboard: Streamlit 
 DevOps (Optional): Docker, Docker Compose
 
@@ -201,7 +202,8 @@ cp .env.example .env
 - Personalized ML modeling
 - Agentic AI architecture
 - Full-stack backend engineering
-- Explainable AI
+- Explainable decision-making (rule-based, human-readable rationale)
+
 
 ### ⚖️ Ethics & Privacy
 - Opt-in data collection only
