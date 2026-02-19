@@ -166,11 +166,13 @@ Autopilot Effectiveness Score (AES):
 - No spam; only high-signal interventions.
 
 ## 🛠️ Tech Stack
-Backend: FastAPI, SQLAlchemy / SQLModel, PostgreSQL, JWT Auth
-ML / Data: Pandas, NumPy, scikit-learn, Feature engineering
-AI / Decision Layer: Agentic reasoning, rule-based intervention logic  
-Dashboard: Streamlit 
-DevOps (Optional): Docker, Docker Compose
+Backend: FastAPI, SQLModel / SQLAlchemy, PostgreSQL, JWT Auth, Async API design
+ML / Analytics: Pandas, NumPy, scikit-learn, Feature Engineering, Behavioral Metrics Modeling
+LLM Layer: Prompt Engineering, Structured Outputs, LLM Orchestration, Explainability Generation
+Decision System: Deterministic Policy Engine (rule-based interventions), Agent Workflow (Observer → Analyzer → Intervention → Orchestrator)
+Data & Feedback: User feedback tracking, intervention evaluation signals
+Dashboard: Streamlit (analytics visualization)
+Deployment: Railway
 
 ### 🧪 Features Implemented
 - Activity logging API (GitHub + manual session start / end events)
