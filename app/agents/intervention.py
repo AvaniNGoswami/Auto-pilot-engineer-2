@@ -82,6 +82,7 @@ SUGGESTION: <specific actionable suggestion to improve productivity or well-bein
 
 
 def choose_intervention(p, b, fb):
+    acceptance = fb.get("acceptance_rate") or 0
 
     if b >= 0.75:
         return "recovery_break"
@@ -89,9 +90,9 @@ def choose_intervention(p, b, fb):
     if p < 0.3:
         return "deep_work_start"
 
-    if fb['acceptance_rate'] < 2:
+    if acceptance < 0.3:
         return "engagement_nudge"
-
+    
     return None
 
 def build_prompt(action, p, b, fb):
@@ -113,14 +114,20 @@ def build_prompt(action, p, b, fb):
     """
 
 def generate_suggestion(action, p, b, fb):
-     response = client.chat.completions.create(
+
+    prompt = build_prompt(action, p, b, fb)
+
+    response = client.chat.completions.create(
         model=MODEL,
-        messages=[{"role": "system", "content": SYSTEM_PROMPT},
-                  {"role": "user", "content": [action,p,b,fb]}],
+        messages=[
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": prompt}
+        ],
         temperature=0.3
-            
-     )
-     return response.choices[0].message.content.strip()
+    )
+
+    return response.choices[0].message.content.strip()
+
 
 
 
