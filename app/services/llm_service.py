@@ -68,7 +68,7 @@ def call_llm(messages):
 
 
 
-def analyze_metrics(metrics: dict):
+def analyze_metrics(metrics: dict,question:str):
     prompt = f"""
     Analyze the developer metrics:
 
@@ -82,7 +82,8 @@ def analyze_metrics(metrics: dict):
 
     messages = [
         {"role": "system", "content": SYSTEM_ROLE},
-        {"role": "user", "content": prompt}
+        # {"role": "user", "content": prompt}
+        {"role": "user", "content": f"Question: {question}\nexplain: {prompt}"}
     ]
 
     return call_llm(messages)

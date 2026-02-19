@@ -44,6 +44,9 @@ from app.core.security import get_current_user
 
 router = APIRouter(prefix='/explain', tags=['Explanation'])
 
+class explain_response(BaseModel):
+    suggestion : str
+
 def get_user_metrics(userid):
     with Session(engine)as session:
         feature = session.query(Features).filter(Features.userid==userid).first()
@@ -55,9 +58,9 @@ def get_user_metrics(userid):
     }
 
 @router.get("/explain")
-def explain_user(current_user=Depends(get_current_user)):
+def explain_user(data: explain_response, current_user=Depends(get_current_user)):
     metrics = get_user_metrics(current_user.id)
 
-    explanation = analyze_metrics(metrics)
+    explanation = analyze_metrics(metrics,question=f"Explain the suggestion: {data.suggestion} based on the user's metrics.")
 
     return {"analysis": explanation}
