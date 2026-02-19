@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends,HTTPException
 from fastapi.security import HTTPAuthorizationCredentials
 from app.core.security import create_access_token, decode_access_token, get_current_user,security
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from jwt import decode
 from app.core.config import SECRET_KEY,ALGORITHM
 from app.models.user import User
@@ -47,7 +48,7 @@ def register(data:dataforregister):
 @router.post("/login")
 def login(email:str):
     with Session(engine) as session:
-        user = session.query(User).filter(User.email==email).first()
+        user = session.query(User).filter(func.lower(User.email) == email.lower()).first()
         if not user:
             raise HTTPException(status_code=400,detail="invalid credentials")
 

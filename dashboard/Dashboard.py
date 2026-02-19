@@ -81,6 +81,10 @@ def load_data(userid):
     return data
 
 df = load_data(userid)
+if df.empty:
+    st.info("No data available yet. Please check back later.")
+    st.stop()
+
 df['datetime'] = pd.to_datetime(df['datetime'])
 df = df.sort_values('datetime')
 

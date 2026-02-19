@@ -11,6 +11,8 @@ SECRET_KEY = os.getenv(
     "dev-secret-key-change-me"
 )
 
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+
 ALGORITHM = "HS256"
 
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES",300))
