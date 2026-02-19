@@ -1,8 +1,8 @@
 # 🚀Auto-pilot-engineer
-Auto-Pilot Engineer is a semi autonomous AI co-pilot that observes developer work patterns, learns personal productivity trends, and provides actionable suggestions to improve focus and prevent burnout — all without surveillance or micromanagement.
+Auto-Pilot Engineer is a developer productivity intelligence system that combines behavioral analytics, ML prediction, and LLM reasoning to generate explainable work recommendations without monitoring code or keystrokes.
 
 One-line pitch:
-Auto-Pilot Engineer collects developer activity metadata, predicts productivity and fatigue levels, and provides suggestions and explanations to help developers work smarter, not longer.
+Auto-Pilot Engineer analyzes developer activity patterns, predicts productivity and fatigue, and uses an LLM to convert behavioral signals into clear, explainable recommendations.
 
 Why This Project Exists
 Modern developers face:
@@ -43,13 +43,29 @@ Auto-Pilot Engineer acts as a silent AI co-pilot that:
 -	Analyzer Agent -> predicts productivity & burnout
 -	Intervention Agent -> generates actionable suggestions using rules and feedback
 -	Orchestrator -> runs the pipeline when Suggestion API is called
-5.	Provides explainable suggestions
--	Suggestion API triggers actionable advice.
--	Explanation API returns human-readable rationale:
-	 - Template-based explanation (no ML, no embeddings)
-	 - Uses recent activity context when available
-     - Fully deterministic and explainable
-6.	Stores user feedback
+5.	LLM Reasoning Layer (New)
+	The system uses an LLM as a reasoning and interpretation layer — not as a predictor.
+
+	The ML models detect what is happening.
+	The LLM explains why it is happening and what to do.
+	Responsibilities of the LLM:
+    - Converts behavioral metrics into human explanations
+    - Generates actionable productivity advice
+    - Adapts tone and context using recent activity history
+    - Provides developer-readable rationale instead of raw scores
+	The LLM never trains on user data and does not affect predictions.
+
+	Pipeline:
+	Metrics → ML Prediction → Structured Context → LLM Reasoning → Suggestion
+
+	This keeps predictions deterministic and explanations flexible.
+6. Explaination
+	- LLM reasoning for contextual interpretation
+ 	- Uses recent session history as reasoning context
+  - 
+	Purpose:
+	Transform numeric predictions into developer-understandable reasoning without exposing private data.
+7.	Stores user feedback
 -	Users can accept/reject suggestions and provide ratings (0–5 stars).
 -	Feedback is stored in the database and can be used to improve future versions.
 -	Currently, ML models are not retrained in real-time, but feedback informs agent decisions.
@@ -203,6 +219,9 @@ cp .env.example .env
 - Agentic AI architecture
 - Full-stack backend engineering
 - Explainable decision-making (rule-based, human-readable rationale)
+- Hybrid AI system design (ML + rules + LLM separation of responsibilities)
+- Practical LLM integration in backend production pipeline
+- Structured prompt engineering using behavioral metrics
 
 
 ### ⚖️ Ethics & Privacy
