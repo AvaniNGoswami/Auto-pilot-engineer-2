@@ -162,7 +162,7 @@ def intervene(userid, analysis):
     action = choose_intervention(p, b, fb)
 
     if action is None:
-        return None   # IMPORTANT: silence is a feature
+        return {'suggestion': 'No intervention needed'}   # IMPORTANT: silence is a feature
 
     suggestion = generate_suggestion(action, p, b, fb)
 
