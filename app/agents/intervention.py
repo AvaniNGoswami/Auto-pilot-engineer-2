@@ -89,7 +89,7 @@ def choose_intervention(p, b, fb):
     if p < 0.3:
         return "deep_work_start"
 
-    if fb['acceptance_rate'] < 2:
+    if fb < 2:
         return "engagement_nudge"
 
     return None
@@ -112,15 +112,35 @@ def build_prompt(action, p, b, fb):
     Only justify the decision.
     """
 
-def generate_suggestion(prompt):
+def generate_suggestion(action, p, b, fb):
      response = client.chat.completions.create(
         model=MODEL,
         messages=[{"role": "system", "content": SYSTEM_PROMPT},
-                  {"role": "user", "content": prompt}],
+                  {"role": "user", "content": [action,p,b,fb]}],
         temperature=0.3
             
      )
      return response.choices[0].message.content.strip()
+
+
+
+# def intervene(userid,analysis):
+#     if not analysis:
+#         return "No data yet, keep logging activities!"
+    
+#     p = analysis['productivity']
+#     b = analysis['burnout']
+#     b = BURNOUT_MAP.get(analysis['burnout'], 0)
+
+
+#     fb = user_score(userid)
+
+#     prompt = build_prompt(p, b, fb)
+#     suggestion = generate_suggestion(prompt)
+
+#     record(userid, suggestion, None, None)
+
+#     return suggestion
 
 
 def intervene(userid, analysis):
@@ -137,11 +157,27 @@ def intervene(userid, analysis):
     if action is None:
         return None   # IMPORTANT: silence is a feature
 
-    explanation = generate_suggestion(action, p, b, fb)
+    suggestion = generate_suggestion(action, p, b, fb)
 
-    record(userid, action, explanation)
+    record(userid, action, suggestion)
 
     return {
-        "action": action,
-        "reason": explanation
+        "suggestion": suggestion
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
