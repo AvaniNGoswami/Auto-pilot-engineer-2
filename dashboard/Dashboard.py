@@ -154,11 +154,13 @@ st.line_chart(daily_df.set_index('date_str')['fatigue score'])
 with Session(engine) as session:
 
     accepted_feedback = session.query(Feedback).filter_by(userid=userid,accepted=True).order_by(Feedback.created_at.desc()).first()
-    acepted_date = accepted_feedback.created_at.date()
+
     if not accepted_feedback:
         st.info("No accepted feedback found for AIS calculation.")
         st.stop()
+    
     else:
+        acepted_date = accepted_feedback.created_at.date()
         pre_features = session.query(Features).filter(Features.userid==userid,
                                                     Features.date >= acepted_date - timedelta(days=2),
                                                     Features.date <= acepted_date).all()
