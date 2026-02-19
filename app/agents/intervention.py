@@ -89,7 +89,7 @@ def choose_intervention(p, b, fb):
     if p < 0.3:
         return "deep_work_start"
 
-    if fb < 2:
+    if fb['acceptance_rate'] < 2:
         return "engagement_nudge"
 
     return None
