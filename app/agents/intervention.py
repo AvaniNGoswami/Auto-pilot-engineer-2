@@ -80,19 +80,37 @@ SUGGESTION: <specific actionable suggestion to improve productivity or well-bein
 #     return "📌 Try scheduling deep work block to boost focus."
 
 
-def build_prompt(p,b,fb):
-        context = f"""
-        Analyze the developer's state:
-    
-        Productivity: {p}
-        Burnout: {b}
-        Feedback Score: {fb}
-    
-        Provide a specific, actionable suggestion to improve their productivity or well-being. 
-        If feedback score is low, encourage them to engage with suggestions. 
-        If burnout is high, prioritize self-care advice.
-        """
-        return context
+
+def choose_intervention(p, b, fb):
+
+    if b >= 0.75:
+        return "recovery_break"
+
+    if p < 0.3:
+        return "deep_work_start"
+
+    if fb < 2:
+        return "engagement_nudge"
+
+    return None
+
+def build_prompt(action, p, b, fb):
+
+    return f"""
+    You are explaining a productivity intervention.
+
+    Action chosen by system: {action}
+
+    Metrics:
+    Productivity: {p}
+    Burnout: {b}
+    Feedback score: {fb}
+
+    Explain WHY this action was triggered.
+    Do not invent new advice.
+    Do not add extra suggestions.
+    Only justify the decision.
+    """
 
 def generate_suggestion(prompt):
      response = client.chat.completions.create(
@@ -105,38 +123,25 @@ def generate_suggestion(prompt):
      return response.choices[0].message.content.strip()
 
 
+def intervene(userid, analysis):
 
-def intervene(userid,analysis):
     if not analysis:
-        return "No data yet, keep logging activities!"
-    
+        return None
+
     p = analysis['productivity']
-    b = analysis['burnout']
     b = BURNOUT_MAP.get(analysis['burnout'], 0)
-
-
     fb = user_score(userid)
 
-    prompt = build_prompt(p, b, fb)
-    suggestion = generate_suggestion(prompt)
+    action = choose_intervention(p, b, fb)
 
-    record(userid, suggestion, None, None)
+    if action is None:
+        return None   # IMPORTANT: silence is a feature
 
-    return suggestion
+    explanation = generate_suggestion(action, p, b, fb)
 
+    record(userid, action, explanation)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return {
+        "action": action,
+        "reason": explanation
+    }
