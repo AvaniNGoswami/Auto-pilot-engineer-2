@@ -57,7 +57,7 @@ def get_user_metrics(userid):
         "break_pattern": feature.total_break_minutes,
     }
 
-@router.get("/explain")
+@router.post("/explain")
 def explain_user(data: explain_response, current_user=Depends(get_current_user)):
     metrics = get_user_metrics(current_user.id)
 
