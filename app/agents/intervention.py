@@ -1,14 +1,15 @@
-import os
-
-from groq import Groq
 from app.agents.feedback import record
-from app.services import history
 from app.services.feedback_utils import user_score
 BURNOUT_MAP = {
     "low": 0,
     "medium": 1,
     "high": 2
 }
+
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+
+MODEL = "llama-3.1-8b-instant"
+
 SYSTEM_PROMPT = """
 You are a productivity analysis engine.
 
@@ -28,12 +29,80 @@ Rules:
 
 Output format EXACTLY:
 
-SUGGESTION: <specific actionable suggestion based on productivity and burnout levels>
+SUGGESTION: <specific actionable suggestion to improve productivity or well-being>
 """
+# def intervene(userid,analysis):
+#     if not analysis:
+#         return "No data yet, keep logging activities!"
+    
+#     p = analysis['productivity']
+#     b = analysis['burnout']
+#     b = BURNOUT_MAP.get(analysis['burnout'], 0)
 
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-MODEL = "llama-3.1-8b-instant"
+#     fb = user_score(userid)
+    
+#     if fb['acceptance_rate'] is not None and fb['acceptance_rate'] <= 0.3:
+#         suggestion = "📌 I notice you've skipped suggestions lately — try completing just **one small task** today 💪"
+#         record(userid, suggestion, None, None)
+#         return suggestion
+    
+#     if fb['avg_rate'] is not None and fb['avg_rate'] >= 4.0:
+#         suggestion= "🔥 Love that suggestions are helping! Try increasing your weekly goals 📈"
+#         record(userid, suggestion, None, None)
+#         return suggestion
+
+#     if b >= 2:
+#         suggestion = "🚨 Burnout risk high! Take a long break + hydrate."
+#         record(userid, suggestion, None, None)
+#         return suggestion
+#     if 1 <= b < 2:
+#         suggestion = "⚠️ Moderate stress. Try a 10-min walk."
+#         record(userid, suggestion, None, None)
+#         return suggestion
+
+#     # Productivity rules (RANGES)
+#     if p >= 1.5:
+#         suggestion= "🔥 Peak focus! Keep pushing!"
+#         record(userid, suggestion, None, None)
+#         return suggestion
+#     if 0.5 <= p < 1.5:
+#         suggestion= "🙂 You're doing okay, maintain rhythm."
+#         record(userid, suggestion, None, None)
+#         return suggestion
+#     if p < 0.5:
+#         suggestion = "📉 Low productivity — try a 25-minute deep work sprint."
+#         record(userid, suggestion, None, None)
+#         return suggestion
+
+#     return "📌 Try scheduling deep work block to boost focus."
+
+
+def build_prompt(p,b,fb):
+        context = f"""
+        Analyze the developer's state:
+    
+        Productivity: {p}
+        Burnout: {b}
+        Feedback Score: {fb}
+    
+        Provide a specific, actionable suggestion to improve their productivity or well-being. 
+        If feedback score is low, encourage them to engage with suggestions. 
+        If burnout is high, prioritize self-care advice.
+        """
+        return context
+
+def generate_suggestion(prompt):
+     response = client.chat.completions.create(
+        model=MODEL,
+        messages=[{"role": "system", "content": SYSTEM_PROMPT},
+                  {"role": "user", "content": prompt}],
+        temperature=0.3
+            
+     )
+     return response.choices[0].message.content.strip()
+
+
 
 def intervene(userid,analysis):
     if not analysis:
@@ -45,59 +114,13 @@ def intervene(userid,analysis):
 
 
     fb = user_score(userid)
-    
-    if fb['acceptance_rate'] is not None and fb['acceptance_rate'] <= 0.3:
-        message=[{"role": "system", "content": f"Answer only using provided activity history and {SYSTEM_PROMPT}."},
-        {"role": "user", "content": {"Question": "What is one actionable suggestion for this user based on their productivity {p} and burnout levels {b}, and the fact that their feedback acceptance rate is low? Their feedback acceptance rate is low, which may indicate they are not engaging with or benefiting from suggestions. Please provide a specific suggestion to help them improve their engagement and productivity.",}}]
-        suggestion = message
-        record(userid, suggestion, None, None)
-        return suggestion
-    
-    if fb['avg_rate'] is not None and fb['avg_rate'] >= 4.0:
-        message=[{"role": "system", "content": f"Answer only using provided activity history and {SYSTEM_PROMPT}."},
-        {"role": "user", "content": {"Question": "What is one actionable suggestion for this user based on their productivity {p} and burnout levels {b}, and the fact that their feedback acceptance rate is low? Their feedback acceptance rate is low, which may indicate they are not engaging with or benefiting from suggestions. Please provide a specific suggestion to help them improve their engagement and productivity.",}}]
-        suggestion = message
-        record(userid, suggestion, None, None)
-        return suggestion
 
-    if b >= 2:
-        message=[{"role": "system", "content": f"Answer only using provided activity history and {SYSTEM_PROMPT}."},
-        {"role": "user", "content": {"Question": "What is one actionable suggestion for this user based on their productivity {p} and burnout levels {b}, and the fact that their feedback acceptance rate is low? Their feedback acceptance rate is low, which may indicate they are not engaging with or benefiting from suggestions. Please provide a specific suggestion to help them improve their engagement and productivity.",}}]
-        suggestion = message
-        record(userid, suggestion, None, None)
-        return suggestion
-    if 1 <= b < 2:
-        message=[{"role": "system", "content": f"Answer only using provided activity history and {SYSTEM_PROMPT}."},
-        {"role": "user", "content": {"Question": "What is one actionable suggestion for this user based on their productivity {p} and burnout levels {b}, and the fact that their feedback acceptance rate is low? Their feedback acceptance rate is low, which may indicate they are not engaging with or benefiting from suggestions. Please provide a specific suggestion to help them improve their engagement and productivity.",}}]
-        suggestion = message
-        record(userid, suggestion, None, None)
-        return suggestion
+    prompt = build_prompt(p, b, fb)
+    suggestion = generate_suggestion(prompt)
 
-    # Productivity rules (RANGES)
-    if p >= 1.5:
-        message=[{"role": "system", "content": f"Answer only using provided activity history and {SYSTEM_PROMPT}."},
-        {"role": "user", "content": {"Question": "What is one actionable suggestion for this user based on their productivity {p} and burnout levels {b}, and the fact that their feedback acceptance rate is low? Their feedback acceptance rate is low, which may indicate they are not engaging with or benefiting from suggestions. Please provide a specific suggestion to help them improve their engagement and productivity.",}}]
-        suggestion = message
-        record(userid, suggestion, None, None)
-        return suggestion
-    if 0.5 <= p < 1.5:
-        message=[{"role": "system", "content": f"Answer only using provided activity history and {SYSTEM_PROMPT}."},
-        {"role": "user", "content": {"Question": "What is one actionable suggestion for this user based on their productivity {p} and burnout levels {b}, and the fact that their feedback acceptance rate is low? Their feedback acceptance rate is low, which may indicate they are not engaging with or benefiting from suggestions. Please provide a specific suggestion to help them improve their engagement and productivity.",}}]
-        suggestion = message
-        record(userid, suggestion, None, None)
-        return suggestion
-    if p < 0.5:
-        message=[{"role": "system", "content": f"Answer only using provided activity history and {SYSTEM_PROMPT}."},
-        {"role": "user", "content": {"Question": "What is one actionable suggestion for this user based on their productivity {p} and burnout levels {b}, and the fact that their feedback acceptance rate is low? Their feedback acceptance rate is low, which may indicate they are not engaging with or benefiting from suggestions. Please provide a specific suggestion to help them improve their engagement and productivity.",}}]
-        suggestion = message
-        record(userid, suggestion, None, None)
-        return suggestion
+    record(userid, suggestion, None, None)
 
-    return "📌 Try scheduling deep work block to boost focus."
-
-
-
-
+    return suggestion
 
 
 
