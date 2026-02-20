@@ -14,7 +14,7 @@ import os
 
 st.set_page_config(page_title="Auto-Pilot Engineer Dashboard", layout="wide")
 
-API_BASE = os.getenv("API_BASE", "https://auto-pilot-engineer-2-production.up.railway.app")
+API_BASE = os.getenv("API_BASE", "https://auto-pilot-engineer-2-avani-n-goswami-production.up.railway.app")
 
 def login_user(email):
     resp = requests.post(url=f"{API_BASE}/auth/login", params={"email": email})
