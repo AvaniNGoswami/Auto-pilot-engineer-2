@@ -93,6 +93,13 @@ def break_calculator(userid: str,project_id:str):
                 timestamp=last_out.out_time
                 )
                 session.add(activity_event)
+                new_in = In_Out(
+                    id=str(uuid4()),
+                    userid=userid,
+                    in_time=now,
+                    project_id=project_id
+                )
+                session.add(new_in)
 
             else:
                 activity_event = ActivityEvent(

@@ -166,7 +166,7 @@ def intervene(userid, analysis):
 
     suggestion = generate_suggestion(action, p, b, fb)
 
-    record(userid, action, suggestion)
+    record(userid, suggestion)
 
     return {
         "suggestion": suggestion

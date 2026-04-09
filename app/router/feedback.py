@@ -12,11 +12,7 @@ class feedbackrequest(BaseModel):
     accepted: bool
     rating:int
     
-
-
-class feedbackresponse(BaseModel):
-    message:str
-
+    
 router = APIRouter(prefix="/feedback",tags=["Feedback"])
 
 @router.post("/")

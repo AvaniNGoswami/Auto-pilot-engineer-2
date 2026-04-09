@@ -1,6 +1,5 @@
 import os
 from groq import Groq
-from openai import OpenAI
 from app.core.config import GROQ_API_KEY
 
 from groq import Groq
@@ -9,14 +8,6 @@ import os
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 MODEL = "llama-3.1-8b-instant"
-
-
-# SYSTEM_ROLE = """
-# You are an engineering productivity analyst.
-# You analyze developer activity metrics and give factual reasoning.
-# Never give generic motivational advice.
-# Explain patterns using the provided data only.
-# """
 
 SYSTEM_PROMPT = """
 You are a productivity analysis engine.
@@ -53,11 +44,7 @@ ACTION:
 3. <specific actionable step>
 """
 SYSTEM_ROLE = SYSTEM_PROMPT
-# MODELS = [
-#     "meta-llama/llama-3.1-8b-instant",
-#     "meta-llama/llama-3.3-70b-versatile",
-#     "mixtral-8x7b-32768"
-# ]
+
 def call_llm(messages):
     res = client.chat.completions.create(
         model=MODEL,
@@ -82,33 +69,10 @@ def analyze_metrics(metrics: dict,question:str):
 
     messages = [
         {"role": "system", "content": SYSTEM_ROLE},
-        # {"role": "user", "content": prompt}
         {"role": "user", "content": f"Question: {question}\nexplain: {prompt}"}
     ]
 
     return call_llm(messages)
-# def analyze_metrics(metrics: dict):
-#     user_prompt = f"""
-#     Analyze the following developer metrics and explain what is happening:
-
-#     {metrics}
-
-#     Output format:
-#     - Summary
-#     - Key Problems
-#     - Why it happened
-#     """
-
-#     response = client.chat.completions.create(
-#         model="gpt-4o-mini",   # cheap + fast
-#         messages=[
-#             {"role": "system", "content": SYSTEM_ROLE},
-#             {"role": "user", "content": user_prompt}
-#         ],
-#         temperature=0.3
-#     )
-
-#     return response.choices[0].message.content
 
 
 def answer_question(question: str, history: list):

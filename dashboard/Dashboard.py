@@ -85,7 +85,7 @@ if df.empty:
     st.info("No data available yet. Please check back later.")
     st.stop()
 
-df['datetime'] = pd.to_datetime(df['datetime'])
+df['date    time'] = pd.to_datetime(df['datetime'])
 df = df.sort_values('datetime')
 
 

@@ -12,7 +12,7 @@ GITHUB_API = "https://api.github.com"
 
 def ingest_github_activity(user_id:str):
     """
-    pulls PRs, commits, issues from github and store into activity_text and activity_events tables.
+    pulls PRs, commits, issues from github and store into activity_text table.
     """
     with Session(engine) as session:
         gh_account = session.query(GitHubAccount).filter(GitHubAccount.userid==user_id).first()
